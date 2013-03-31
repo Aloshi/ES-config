@@ -11,7 +11,7 @@ To solve that, **I've written a short Bash script named "get_dependencies.sh" th
 
 OR, If you want it install everything yourself, you'll need these dependencies:
 ```
-sudo apt-get install libsdl1.2-dev libsdl-ttf2.0-dev libsdl-image1.2-dev
+sudo apt-get install libsdl1.2-dev libsdl-ttf2.0-dev libsdl-image1.2-dev libboost-filesystem-dev
 ```
 
 You'll also need [AngelScript](http://www.angelcode.com/angelscript/downloads.html), which is inconveniently absent from the Debian repositories!

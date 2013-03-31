@@ -5,10 +5,10 @@
 
 #Package dependencies first, because those are easy
 # +cmake for angelscript
-sudo apt-get install libsdl1.2-dev libsdl-ttf2.0-dev libsdl-image1.2-dev
+sudo apt-get install libsdl1.2-dev libsdl-ttf2.0-dev libsdl-image1.2-dev libboost-filesystem-dev
 
 #Install to home folder
-cd ~/
+pushd ~/
 
 #install AngelScript
 if [ ! -e "/usr/include/angelscript.h" ] && [ ! -e "/usr/local/include/angelscript.h" ]; then
@@ -24,6 +24,8 @@ if [ ! -e "/usr/include/angelscript.h" ] && [ ! -e "/usr/local/include/angelscri
 	cd sdk/angelscript/projects/gnuc
 	make
 	sudo make install
-	cd ../../../../
+	cd $HOME
 	rm -rf angelscript
 fi
+
+popd
