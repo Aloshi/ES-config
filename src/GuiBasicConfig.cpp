@@ -33,6 +33,8 @@ void GuiBasicConfig::input(InputConfig* config, Input input)
 		}
 	}else{
 		input.configured = true;
+		std::cout << "[type " << input.type << ", id " << input.id << ", val " << input.value << "] -> " << inputName[mCurInputId] << "\n";
+
 		mWindow->getInputManager()->getInputConfig(mDevice)->setInput(inputName[mCurInputId], input);
 		mCurInputId++;
 	}

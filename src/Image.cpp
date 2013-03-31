@@ -2,8 +2,9 @@
 #include <iostream>
 
 extern SDL_Surface* sScreen;
+extern std::string RESOURCE_PREFIX;
 
-Image::Image(const std::string& path) : mPath(path)
+Image::Image(const std::string& path) : mPath(RESOURCE_PREFIX + path)
 {
 	mImage = NULL;
 	load();

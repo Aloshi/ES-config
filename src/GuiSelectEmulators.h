@@ -18,6 +18,7 @@ public:
 
 private:
 	void clearSystems();
+	void searchDirForConfigs(const std::string& path, const char* matchExtension, bool recurse = true);
 	void loadSystemConfigs();
 	void populateList();
 

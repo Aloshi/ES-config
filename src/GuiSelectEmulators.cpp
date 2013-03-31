@@ -1,10 +1,15 @@
 #include "GuiSelectEmulators.h"
 #include "Window.h"
 #include "GuiConfigureInputs.h"
+#include <boost/filesystem.hpp>
+
+extern std::string FORCED_SCRIPT_DIRECTORY;
+extern std::string RESOURCE_PREFIX;
+
+namespace fs = boost::filesystem;
 
 GuiSelectEmulators::GuiSelectEmulators(Window* window) : Gui(window), mUncheckedImage("unchecked.png"), mCheckedImage("checked.png"), mList(window)
 {
-	std::cout << "Starting GuiSelectEmulators\n";
 	mList.setPosition(0, 40);
 
 	loadSystemConfigs();
@@ -22,13 +27,39 @@ void GuiSelectEmulators::clearSystems()
 	mSystems.clear();
 }
 
+//recursive search directory
+void GuiSelectEmulators::searchDirForConfigs(const std::string& path, const char* matchExtension, bool recurse)
+{
+	for(fs::directory_iterator end, dir(path); dir != end; ++dir)
+	{
+		fs::path filePath = (*dir).path();
+
+		if(fs::is_directory(*dir) && recurse)
+		{
+			searchDirForConfigs(filePath.string(), matchExtension);
+		}
+
+		if(filePath.extension() == matchExtension)
+		{
+			mSystems.push_back(new EmulatorData(filePath.string(), mWindow->getScriptEngine()));
+		}
+	}
+}
+
 void GuiSelectEmulators::loadSystemConfigs()
 {
 	clearSystems();
 
-	//this needs to autopopulate somehow
-	mSystems.push_back(new EmulatorData("retroarch_config.xml", mWindow->getScriptEngine()));
-	mSystems.push_back(new EmulatorData("dgen_config.xml", mWindow->getScriptEngine()));
+	const int pathCount = 2;
+	std::string path[pathCount] = { "scripts/", FORCED_SCRIPT_DIRECTORY };
+
+	for(int i = 0; i < pathCount; i++)
+	{
+		if(path[i].empty() || !fs::is_directory(path[i]))
+			continue;
+		
+		searchDirForConfigs(path[i], ".xml", true);
+	}
 
 	if(mSystems.size() == 0)
 	{
@@ -41,6 +72,11 @@ void GuiSelectEmulators::loadSystemConfigs()
 void GuiSelectEmulators::populateList()
 {
 	mList.clear();
+
+	if(mSystems.size() == 0)
+	{
+		mList.addItem(NULL, "No emulator scripts found!", NULL);
+	}
 
 	for(unsigned int i = 0; i < mSystems.size(); i++)
 	{
@@ -83,8 +119,10 @@ void GuiSelectEmulators::input(InputConfig* config, Input input)
 				mList.changeSelectedImage(&mUncheckedImage);
 		}else{
 			//selected an option
-			//only one is DONE right now
-			done();
+			if(mList.getSelectedText() == "NEXT")
+			{
+				done();
+			}
 		}
 	}
 }

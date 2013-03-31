@@ -10,6 +10,9 @@ GuiTestConfigs::GuiTestConfigs(Window* window) : Gui(window)
 
 void GuiTestConfigs::input(InputConfig* config, Input input)
 {
+	//input.value doesn't work for testing opposing hats
+	//but it's not really critical, so...oh well.
+	//probably the best fix for that would be on the InputManager::parseEvent level, sending out a value = 0 hat event whenever a hat changes.
 	if(input.value == 0)
 	{
 		for(unsigned int i = 0; i < mPressed.size(); i++)

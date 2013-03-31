@@ -1,0 +1,56 @@
+<!--This is just an old copy of retroarch_config.xml. Used to test lists. !-->
+<emulator>
+	<name>DGen</name>
+	<configPath>dgen.cfg</configPath>
+	
+	<!-- Declare any global variables or functions here. They'll stay in scope across every script in this file. !-->
+	<declarationScript>
+	string value = "";
+	string type = "";
+	string playerNum = "";
+	
+	void writePair(File@ f, string inputName)
+	{
+		f.write("input_player" + playerNum + "_" + inputName + "_" + type + " = " + value);
+	}
+	</declarationScript>
+
+	<!-- Called once, at the very beginning of writing the config file. !-->
+	<initScript>
+	</initScript>
+
+	<!-- Called once before writing for each player.
+	Wrapped with: void perPlayer(File@ f, int PLAYER_NUMBER, int DEVICE_ID) { !-->
+	<perPlayerScript>
+		playerNum = PLAYER_NUMBER + 1;
+		f.write("input_player" + playerNum + "_joyindex = " + DEVICE_ID);
+	</perPlayerScript>
+
+	<!-- Called once before each input, with arguments INPUT_NAME, INPUT_TYPE, INPUT_VALUE. 
+	You probably want to update your "global" variables here for the following write.
+	Wrapped with: void perInput(File@ f, string INPUT_NAME, uint INPUT_TYPE, int INPUT_ID, int INPUT_VALUE, int JOYSTICK_ID) { !-->
+	<perInputScript>
+	switch(INPUT_TYPE)
+	{
+		case TYPE_BUTTON:
+			type = "btn";
+			value = INPUT_ID;
+			break;
+		case TYPE_AXIS:
+			type = "axis";
+			if(INPUT_VALUE > 0)
+				value = "+" + INPUT_ID;
+			else
+				value = "-" + INPUT_ID;
+			break;
+		
+		default:
+			print("unsupported input type?! [" + INPUT_TYPE + "]");
+			break;
+	}
+	</perInputScript>
+
+	<!-- List of inputs, and a script called for writing them. !-->
+	<input name="Genesis_A">writePair(f, "a");</input>
+
+</emulator>

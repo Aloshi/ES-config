@@ -3,6 +3,7 @@
 #include <SDL_ttf.h>
 #include <iostream>
 
+extern std::string RESOURCE_PREFIX;
 
 static int sScreenWidth = 0;
 static int sScreenHeight = 0;
@@ -15,18 +16,18 @@ static TTF_Font* sFont = NULL;
 
 void Renderer::init()
 {
-	sScreen = SDL_SetVideoMode(800, 600, 32, SDL_SWSURFACE);
+	sScreen = SDL_SetVideoMode(800, 600, 16, SDL_SWSURFACE);
 	sScreenWidth = sScreen->w;
 	sScreenHeight = sScreen->h;
 
 	if(sFont != NULL)
 		TTF_CloseFont(sFont);
 
-	sFont = TTF_OpenFont(FONT_PATH, (int)(sScreenHeight * 0.04));
+	sFont = TTF_OpenFont((RESOURCE_PREFIX + FONT_PATH).c_str(), (int)(sScreenHeight * 0.04));
 
 	if(sFont == NULL)
 	{
-		std::cout << "Could not load font!\n";
+		std::cout << "Could not load font! Prepare for crash!\n";
 	}
 }
 

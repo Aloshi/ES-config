@@ -1,10 +1,11 @@
+//Written by Alec "Aloshi" Lofquist.
+
 #include <iostream>
 #include <stdlib.h>
 #include <angelscript.h>
 #include <scriptarray/scriptarray.h>
 #include <scriptstdstring/scriptstdstring.h>
 
-#include "EmulatorData.h"
 #include "FileWriter.h"
 
 #include <SDL.h>
@@ -12,6 +13,11 @@
 #include "Renderer.h"
 #include "Window.h"
 #include "GuiDetectDevice.h"
+#include <boost/filesystem.hpp>
+
+//stuff passed by command-line that doesn't really change
+std::string FORCED_SCRIPT_DIRECTORY = "";
+std::string RESOURCE_PREFIX = "";
 
 //used to print angelscript messages to the terminal
 void MessageCallback(const asSMessageInfo *msg, void *param)
@@ -84,8 +90,44 @@ asIScriptEngine* setUpScriptEngine()
 	return engine;
 }
 
+bool parseArgs(int argc, char* argv[])
+{
+	for(int i = 0; i < argc; i++)
+	{
+		if(strcmp(argv[i], "--help") == 0)
+		{
+			std::cout << "\nES-config\n";
+			std::cout << "A tool for configuring multiple emulators.\n";
+			std::cout << "------------------------------------------\n";
+			std::cout << "--scriptdir [path]	search for scripts at [path] (spaces? use quotes)\n";
+			std::cout << "--resourcedir [path]	load images, etc from [path]\n";
+			std::cout << "--help			pierce the heavens\n";
+			return false;
+		}else if(strcmp(argv[i], "--scriptdir") == 0 && i < argc - 1)
+		{
+			FORCED_SCRIPT_DIRECTORY = argv[i + 1];
+			i += 2;
+		}else if(strcmp(argv[i], "--resourcedir") == 0 && i < argc - 1)
+		{
+			RESOURCE_PREFIX = argv[i + 1];
+
+			//must end in a slash
+			char slash = (char)(boost::filesystem::path("/")).make_preferred().native()[0];
+			if(RESOURCE_PREFIX[RESOURCE_PREFIX.length() - 1] != slash)
+				RESOURCE_PREFIX += slash;
+			
+			i += 2;
+		}
+	}
+
+	return true;
+}
+
 int main(int argc, char *argv[])
 {
+	if(!parseArgs(argc, argv))
+		return 0;
+
 	asIScriptEngine* engine = setUpScriptEngine();
 
 	SDL_Init(SDL_INIT_VIDEO);
@@ -137,19 +179,6 @@ int main(int argc, char *argv[])
 
 		Renderer::swapBuffers();
 	}
-
-
-
-	/*EmulatorData test("retroarch_config.xml", engine);
-	
-	std::vector<InputConfig*> testConfigs;
-	testConfigs.push_back(new InputConfig(0));
-
-	testConfigs.at(0)->setInput("a", Input(TYPE_BUTTON, 0, 0, true));
-
-	test.write(testConfigs);
-
-	std::cout << "done\n";*/
 
 	Renderer::deinit();
 

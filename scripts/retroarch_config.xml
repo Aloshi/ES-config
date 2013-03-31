@@ -1,0 +1,119 @@
+<emulator>
+	<!-- Name as it will appear in the emulator select screen. !-->
+	<name>RetroArch</name>
+	
+	<!-- File we will write to. !-->
+	<configPath>retroarch.cfg</configPath>
+	
+	<!-- Declare any global variables or functions here. They'll stay in scope across every script in this file. 
+	Not wrapped with anything. !-->
+	<declarationScript>
+	bool skip = false;
+	string value = "";
+	string type = "";
+	string playerNum = "";
+	
+	void writePair(File@ f, string inputName)
+	{
+		if(!skip)
+			f.write("input_player" + playerNum + "_" + inputName + "_" + type + " = " + value);
+	}
+	
+	//hats are stored as a bitmask, so we bitwise and (not check for equality) with the HAT_DIR enum to figure out the direction
+	string getHatDir(int d)
+	{
+		if(d & HAT_UP != 0)
+			return "up";
+		if(d & HAT_DOWN != 0)
+			return "down";
+		if(d & HAT_RIGHT != 0)
+			return "right";
+		if(d & HAT_LEFT != 0)
+			return "left";
+		
+		return "";
+	}
+	</declarationScript>
+
+	<!-- Called once, at the very beginning of writing the config file. 
+	Wrapped with: void init(File@ f) { !-->
+	<initScript>
+	</initScript>
+
+	<!-- Called once before writing for each player.
+	Wrapped with: void perPlayer(File@ f, int PLAYER_NUMBER, int DEVICE_ID) { !-->
+	<perPlayerScript>
+		playerNum = PLAYER_NUMBER + 1;
+		f.write("input_player" + playerNum + "_joypad_index = " + DEVICE_ID);
+	</perPlayerScript>
+
+	<!-- Called once before each input, with arguments INPUT_NAME, INPUT_TYPE, INPUT_VALUE. 
+	You probably want to update your "global" variables here for the following write.
+	Wrapped with: void perInput(File@ f, string INPUT_NAME, InputType INPUT_TYPE, int INPUT_ID, int INPUT_VALUE, int DEVICE_ID) { !-->
+	<perInputScript>
+	skip = false;
+	switch(INPUT_TYPE)
+	{
+		case TYPE_BUTTON:
+			type = "btn";
+			value = INPUT_ID;
+			break;
+		
+		case TYPE_AXIS:
+			type = "axis";
+			if(INPUT_VALUE > 0)
+				value = "+" + INPUT_ID;
+			else
+				value = "-" + INPUT_ID;
+			break;
+			
+		case TYPE_HAT:
+			type = "btn";
+			value = "h" + INPUT_ID;
+			value += getHatDir(INPUT_VALUE);
+			break;
+		
+		default:
+			print("unsupported input type?! [" + INPUT_TYPE + "]");
+			break;
+	}
+	
+	if(INPUT_TYPE == TYPE_AXIS && (INPUT_NAME == "Up" || INPUT_NAME == "Down" || INPUT_NAME == "Left" || INPUT_NAME == "Right"))
+	{
+		//we're assigning an analog stick to a direction, so we can bind it to the "real" stick config
+		//this allows it to be read as a true analog, which is really noticable in, say, PS1 emulation
+		string stickconf = "input_player" + playerNum + "_l_";
+		
+		if(INPUT_NAME == "Up" || INPUT_NAME == "Down")
+			stickconf += "y_";
+		else
+			stickconf += "x_";
+		
+		if(INPUT_NAME == "Up" || INPUT_NAME == "Right")
+			stickconf += "plus";
+		else
+			stickconf += "minus";
+			
+		f.write(stickconf + " = " + value); //value is still correct from the switch
+		skip = true;
+	}
+	</perInputScript>
+
+	<!-- List of inputs, and a script called for writing them. 
+	Wrapped with: void perInput(File@ f, string INPUT_NAME, uint INPUT_TYPE, int INPUT_ID, int INPUT_VALUE, int DEVICE_ID) { !-->
+	<input name="A" type="BUTTON|AXIS|HAT">writePair(f, "a");</input>
+	<input name="B" type="BUTTON|AXIS|HAT">writePair(f, "b");</input>
+	<input name="X" type="BUTTON|AXIS|HAT">writePair(f, "x");</input>
+	<input name="Y" type="BUTTON|AXIS|HAT">writePair(f, "y");</input>
+	<input name="L" type="BUTTON|AXIS|HAT">writePair(f, "l");</input>
+	<input name="R" type="BUTTON|AXIS|HAT">writePair(f, "r");</input>
+	
+	<input name="Start" type="BUTTON|AXIS|HAT">writePair(f, "start");</input>
+	<input name="Select" type="BUTTON|AXIS|HAT">writePair(f, "select");</input>
+
+	<input name="Up" type="BUTTON|AXIS|HAT">writePair(f, "up");</input>
+	<input name="Down" type="BUTTON|AXIS|HAT">writePair(f, "down");</input>
+	<input name="Left" type="BUTTON|AXIS|HAT">writePair(f, "left");</input>
+	<input name="Right" type="BUTTON|AXIS|HAT">writePair(f, "right");</input>
+
+</emulator>
