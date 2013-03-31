@@ -29,6 +29,15 @@ Command line arguments:
 --help								pierce the heavens
 ```
 
+Currently, ES-config uses the following resource files (expected to be located in ./resources, but changable with --resourcedir):
+```
+checked.png - icon for selected in emulator list
+unchecked.png - icon for unselected in emulator list
+done.png - icon for input configured
+notdone.png - icon for input unconfigured
+font.ttf - font used throughout
+```
+
 As this is primarily an input configuration interface, it is not currently navigatable with the keyboard.
 F4 will close the application if it hasn't frozen.
 

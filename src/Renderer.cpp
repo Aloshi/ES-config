@@ -12,7 +12,7 @@ SDL_Surface* sScreen = NULL; //not static because used by the current Image clas
 
 static TTF_Font* sFont = NULL;
 
-#define FONT_PATH "arial.ttf"
+#define FONT_NAME "font.ttf"
 
 void Renderer::init()
 {
@@ -23,7 +23,7 @@ void Renderer::init()
 	if(sFont != NULL)
 		TTF_CloseFont(sFont);
 
-	sFont = TTF_OpenFont((RESOURCE_PREFIX + FONT_PATH).c_str(), (int)(sScreenHeight * 0.04));
+	sFont = TTF_OpenFont((RESOURCE_PREFIX + FONT_NAME).c_str(), (int)(sScreenHeight * 0.04));
 
 	if(sFont == NULL)
 	{

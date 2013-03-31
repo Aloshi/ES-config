@@ -17,7 +17,7 @@
 
 //stuff passed by command-line that doesn't really change
 std::string FORCED_SCRIPT_DIRECTORY = "";
-std::string RESOURCE_PREFIX = "";
+std::string RESOURCE_PREFIX = "resources/";
 
 //used to print angelscript messages to the terminal
 void MessageCallback(const asSMessageInfo *msg, void *param)
@@ -112,9 +112,8 @@ bool parseArgs(int argc, char* argv[])
 			RESOURCE_PREFIX = argv[i + 1];
 
 			//must end in a slash
-			char slash = (char)(boost::filesystem::path("/")).make_preferred().native()[0];
-			if(RESOURCE_PREFIX[RESOURCE_PREFIX.length() - 1] != slash)
-				RESOURCE_PREFIX += slash;
+			if(RESOURCE_PREFIX[RESOURCE_PREFIX.length() - 1] != '/')
+				RESOURCE_PREFIX += '/';
 			
 			i += 2;
 		}
