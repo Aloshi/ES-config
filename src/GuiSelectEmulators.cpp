@@ -2,11 +2,11 @@
 #include "Window.h"
 #include "GuiConfigureInputs.h"
 
-GuiSelectEmulators::GuiSelectEmulators(Window* window) : Gui(window), mList(window), mUncheckedImage("unchecked.png"), mCheckedImage("checked.png")
+GuiSelectEmulators::GuiSelectEmulators(Window* window) : Gui(window), mUncheckedImage("unchecked.png"), mCheckedImage("checked.png"), mList(window)
 {
 	std::cout << "Starting GuiSelectEmulators\n";
 	mList.setPosition(0, 40);
-	
+
 	loadSystemConfigs();
 }
 

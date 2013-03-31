@@ -4,8 +4,8 @@
 #include "GuiChangeInput.h"
 #include <SDL.h>
 
-GuiConfigureInputs::GuiConfigureInputs(Window* window, std::vector<EmulatorData*> systems) : Gui(window), mList(window), mSystems(systems), 
-	mImageDone("done.png"), mImageNotDone("notdone.png")
+GuiConfigureInputs::GuiConfigureInputs(Window* window, std::vector<EmulatorData*> systems) : Gui(window), 
+	mImageDone("done.png"), mImageNotDone("notdone.png"), mList(window), mSystems(systems)
 {
 	mCurrentPlayer = 0;
 

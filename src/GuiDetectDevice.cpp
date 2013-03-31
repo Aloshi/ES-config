@@ -4,6 +4,7 @@
 #include "GuiBasicConfig.h"
 #include <iostream>
 #include <string>
+#include<sstream>
 
 GuiDetectDevice::GuiDetectDevice(Window* window) : Gui(window)
 {
@@ -36,7 +37,11 @@ void GuiDetectDevice::render()
 	if(mWindow->getInputManager()->getNumDevices() > 0)
 	{
 		std::string playerString = "PLAYER ";
-		playerString += std::to_string((long long)(mCurrentPlayer + 1));
+		std::stringstream stream;
+		stream << (mCurrentPlayer + 1);
+		stream >> playerString;
+
+		//playerString += std::to_string((long long)(mCurrentPlayer + 1));
 
 		Renderer::drawCenteredText("Press a button on the device for", Renderer::getHeight() / 3, 0x000000FF);
 		Renderer::drawCenteredText(playerString, (int)(Renderer::getHeight()*1.5) / 3, 0x00CC00FF);

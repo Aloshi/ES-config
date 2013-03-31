@@ -19,12 +19,12 @@ public:
 
 		int entrySize = Renderer::getFontSize() + 8;
 		int imgPadding = 4; //x padding between image and text
-		int screenCount = (Renderer::getHeight() - mOffsetY) / entrySize;
+		int screenCount = (Renderer::getHeight() - this->getOffsetY()) / entrySize;
 		int startEntry = 0;
 
 		if((int)mEntries.size() >= screenCount)
 		{
-			startEntry = mCursor - (int)(screenCount * 0.5);
+			startEntry = this->mCursor - (int)(screenCount * 0.5);
 			if(startEntry < 0)
 				startEntry = 0;
 			if(startEntry >= (int)mEntries.size() - screenCount)
@@ -35,11 +35,11 @@ public:
 		if(listCutoff > (int)mEntries.size())
 			listCutoff = mEntries.size();
 
-		int y = mOffsetY;
+		int y = this->getOffsetY();
 
 		for(int i = startEntry; i < listCutoff; i++)
 		{
-			if(mCursor == i)
+			if(this->mCursor == i)
 			{
 				Renderer::drawRect(0, y - 4, Renderer::getWidth(), entrySize, 0x2222FFFF);
 			}
@@ -47,9 +47,9 @@ public:
 			ListEntry* entry = &mEntries.at((unsigned int)i);
 
 			if(entry->image != NULL)
-				entry->image->draw(mOffsetX + (entry->getImgWidth() / 2), y + (Renderer::getFontSize() / 2), true);
+				entry->image->draw(this->getOffsetX() + (entry->getImgWidth() / 2), y + (Renderer::getFontSize() / 2), true);
 
-			Renderer::drawText(entry->text, mOffsetX + entry->getImgWidth() + imgPadding, y, 0x000000FF);
+			Renderer::drawText(entry->text, this->getOffsetX() + entry->getImgWidth() + imgPadding, y, 0x000000FF);
 
 			y += entrySize;
 		}
@@ -65,22 +65,22 @@ public:
 
 	ListType getSelected()
 	{
-		return mEntries.at(mCursor).item;
+		return mEntries.at(this->mCursor).item;
 	}
 
 	Image* getSelectedImage()
 	{
-		return mEntries.at(mCursor).image;
+		return mEntries.at(this->mCursor).image;
 	}
 
 	std::string getSelectedText()
 	{
-		return mEntries.at(mCursor).text;
+		return mEntries.at(this->mCursor).text;
 	}
 
 	void changeSelectedImage(Image* img)
 	{
-		mEntries.at(mCursor).image = img;
+		mEntries.at(this->mCursor).image = img;
 	}
 
 	int getLength() { return mEntries.size(); }
@@ -89,8 +89,8 @@ public:
 private:
 	struct ListEntry
 	{
-		std::string text;
 		ListType item;
+		std::string text;
 		Image* image;
 
 		ListEntry(ListType itm, std::string txt, Image* img) : item(itm), text(txt), image(img) { };

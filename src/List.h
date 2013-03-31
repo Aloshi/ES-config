@@ -79,6 +79,9 @@ public:
 		mOffsetY = y;
 	}
 
+	int getOffsetX() { return mOffsetX; }
+	int getOffsetY() { return mOffsetY; }
+
 	void setCentered(bool center) { mCentered = center; };
 
 	virtual int getLength() = 0;

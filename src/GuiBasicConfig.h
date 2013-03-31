@@ -2,6 +2,7 @@
 #define _GUIBASICCONFIG_H_
 
 #include "Gui.h"
+#include <string>
 
 class GuiBasicConfig : public Gui
 {

@@ -73,7 +73,7 @@ void InputManager::parseEvent(const SDL_Event& ev)
 	{
 	case SDL_JOYAXISMOTION:
 		//if it switched boundaries
-		if(abs(ev.jaxis.value) > DEADZONE != abs(mPrevAxisValues[ev.jaxis.which][ev.jaxis.axis]) > DEADZONE)
+		if((abs(ev.jaxis.value) > DEADZONE) != (abs(mPrevAxisValues[ev.jaxis.which][ev.jaxis.axis]) > DEADZONE))
 		{
 			int normValue;
 			if(abs(ev.jaxis.value) <= DEADZONE)

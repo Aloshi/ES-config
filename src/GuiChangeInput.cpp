@@ -1,7 +1,7 @@
 #include "GuiChangeInput.h"
 #include "Renderer.h"
 
-GuiChangeInput::GuiChangeInput(Window* window, int playerNum, const std::string& inputName) : Gui(window), mInputName(inputName), mPlayerNum(playerNum)
+GuiChangeInput::GuiChangeInput(Window* window, int playerNum, const std::string& inputName) : Gui(window), mPlayerNum(playerNum), mInputName(inputName)
 {
 }
 
