@@ -26,7 +26,7 @@ Command line arguments:
 ```
 --scriptdir [path]		search for scripts at [path]
 --resourcedir [path]	load images, etc from [path]
---help								pierce the heavens
+--help			    	pierce the heavens
 ```
 
 Currently, ES-config uses the following resource files (expected to be located in ./resources, but changable with --resourcedir):
@@ -40,6 +40,8 @@ font.ttf - font used throughout
 
 As this is primarily an input configuration interface, it is not currently navigatable with the keyboard.
 F4 will close the application if it hasn't frozen.
+
+This is still a work-in-progress! In particular, multi-player support isn't quite working.
 
 -Aloshi
 http://www.aloshi.com
