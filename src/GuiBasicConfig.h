@@ -13,6 +13,7 @@ public:
 	void update(int deltaTime);
 	void render();
 private:
+	std::string mErrorMsg;
 	int mDevice;
 	int mCurInputId;
 };
