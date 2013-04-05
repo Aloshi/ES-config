@@ -21,7 +21,7 @@ void GuiDetectDevice::input(InputConfig* config, Input input)
 		//done?
 		if(mCurrentPlayer >= mWindow->getInputManager()->getNumDevices())
 		{
-			mWindow->pushGui(new GuiBasicConfig(mWindow, input.device));
+			mWindow->pushGui(new GuiBasicConfig(mWindow, mWindow->getInputManager()->getInputConfigByPlayer(0)));
 			delete this;
 		}
 	}

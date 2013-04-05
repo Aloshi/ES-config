@@ -7,14 +7,14 @@
 class GuiBasicConfig : public Gui
 {
 public:
-	GuiBasicConfig(Window* window, int device);
+	GuiBasicConfig(Window* window, InputConfig* target);
 
 	void input(InputConfig* config, Input input);
 	void update(int deltaTime);
 	void render();
 private:
 	std::string mErrorMsg;
-	int mDevice;
+	InputConfig* mTargetConfig;
 	int mCurInputId;
 };
 

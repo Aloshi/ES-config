@@ -7,7 +7,7 @@
 static int inputCount = 6;
 static std::string inputName[6] = { "Up", "Down", "Left", "Right", "A", "B"};
 
-GuiBasicConfig::GuiBasicConfig(Window* window, int device) : Gui(window), mDevice(device)
+GuiBasicConfig::GuiBasicConfig(Window* window, InputConfig* target) : Gui(window), mTargetConfig(target)
 {
 	mCurInputId = 0;
 }
@@ -19,7 +19,7 @@ void GuiBasicConfig::update(int deltaTime)
 
 void GuiBasicConfig::input(InputConfig* config, Input input)
 {
-	if(input.device != mDevice || input.value == 0)
+	if(config != mTargetConfig || input.value == 0)
 		return;
 
 	if(mCurInputId >= inputCount)

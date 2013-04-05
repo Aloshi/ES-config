@@ -17,7 +17,7 @@ std::string toLower(const std::string& name)
 
 InputConfig::InputConfig(int deviceId) : mDeviceId(deviceId)
 {
-	mPlayerNum = 0;
+	mPlayerNum = -1;
 }
 
 Input InputConfig::getInputByName(const std::string& name)

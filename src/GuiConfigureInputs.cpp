@@ -122,5 +122,5 @@ void GuiConfigureInputs::render()
 
 	Renderer::drawCenteredText("ASSIGN INPUTS", 2, 0xFF00FFFF);
 	mInputList.render();
-	mMappedList.render();
+	//mMappedList.render(); //input.string() isn't quite right yet
 }
