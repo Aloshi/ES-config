@@ -22,7 +22,8 @@ public:
 
 	void parseEvent(const SDL_Event& ev);
 
-	InputConfig* getInputConfig(int device);
+	InputConfig* getInputConfigByDevice(int device);
+	InputConfig* getInputConfigByPlayer(int player);
 
 private:
 	static const int DEADZONE = 23000;

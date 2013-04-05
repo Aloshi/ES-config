@@ -20,6 +20,8 @@ void GuiConfigureInputs::populateList()
 	mInputList.clear();
 	mMappedList.clear();
 
+	InputConfig* config = mWindow->getInputManager()->getInputConfigByPlayer(mCurrentPlayer);
+
 	for(unsigned int i = 0; i < mSystems.size(); i++)
 	{
 		EmulatorData* system = mSystems.at(i);
@@ -29,7 +31,7 @@ void GuiConfigureInputs::populateList()
 			InputData* inputData = system->getInput(k);
 
 			Image* img;
-			if(mWindow->getInputManager()->getInputConfig(mCurrentPlayer)->getInputByName(inputData->name).configured)
+			if(config->getInputByName(inputData->name).configured)
 			{
 				img = &mImageDone;
 			}else{
@@ -37,13 +39,17 @@ void GuiConfigureInputs::populateList()
 			}
 
 			mInputList.addItem(inputData, inputData->name, img);
-			mMappedList.addItem(NULL, mWindow->getInputManager()->getInputConfig(mCurrentPlayer)->getInputByName(inputData->name).string(), NULL);
+			mMappedList.addItem(NULL, config->getInputByName(inputData->name).string(), NULL);
 		}
 	}
 
 	mInputList.addItem(NULL, "TEST", NULL);
 	mInputList.addItem(NULL, "SAVE", NULL);
 	mInputList.addItem(NULL, "QUIT", NULL);
+
+	mMappedList.addItem(NULL, "", NULL);
+	mMappedList.addItem(NULL, "", NULL);
+	mMappedList.addItem(NULL, "", NULL);
 }
 
 void GuiConfigureInputs::input(InputConfig* config, Input input)
@@ -90,10 +96,7 @@ void GuiConfigureInputs::done()
 	std::vector<InputConfig*> configs;
 	for(int i = 0; i < mWindow->getInputManager()->getNumDevices(); i++)
 	{
-		if(mWindow->getInputManager()->getInputConfig(i)->getPlayerNum() != -1)
-		{
-			configs.push_back(mWindow->getInputManager()->getInputConfig(i));
-		}
+		configs.push_back(mWindow->getInputManager()->getInputConfigByPlayer(i));
 	}
 
 	for(unsigned int i = 0; i < mSystems.size(); i++)

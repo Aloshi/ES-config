@@ -25,7 +25,7 @@ void GuiBasicConfig::input(InputConfig* config, Input input)
 	if(mCurInputId >= inputCount)
 	{
 		//done
-		if(input.type == TYPE_BUTTON)
+		if(input.type == TYPE_BUTTON || input.type == TYPE_KEY)
 		{
 			std::cout << "done with basic config\n";
 			mWindow->pushGui(new GuiSelectEmulators(mWindow));
@@ -35,7 +35,7 @@ void GuiBasicConfig::input(InputConfig* config, Input input)
 		input.configured = true;
 		std::cout << "[type " << input.type << ", id " << input.id << ", val " << input.value << "] -> " << inputName[mCurInputId] << "\n";
 
-		mWindow->getInputManager()->getInputConfig(mDevice)->setInput(inputName[mCurInputId], input);
+		config->setInput(inputName[mCurInputId], input);
 		mCurInputId++;
 	}
 }

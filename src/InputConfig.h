@@ -77,6 +77,7 @@ public:
 			case TYPE_KEY: //might want to use SDL_GetKeyName(SDLKey key), not sure if we can, will return gibberish if val < 0 (non-alphanum key)
 				str = "Key ";
 				str += (char)value;
+				break;
 			default:
 				str = "Input to string error";
 				break;

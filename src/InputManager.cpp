@@ -1,6 +1,7 @@
 #include "InputManager.h"
 #include "InputConfig.h"
 #include "Window.h"
+#include <iostream>
 
 InputManager::InputManager(Window* window) : mWindow(window)
 {
@@ -72,12 +73,27 @@ void InputManager::deinit()
 
 int InputManager::getNumDevices() { return mNumJoysticks; }
 
-InputConfig* InputManager::getInputConfig(int device)
+InputConfig* InputManager::getInputConfigByDevice(int device)
 {
 	if(device == DEVICE_KEYBOARD)
 		return mKeyboardInputConfig;
 	else
 		return mInputConfigs[device];
+}
+
+InputConfig* InputManager::getInputConfigByPlayer(int player)
+{
+	if(mKeyboardInputConfig->getPlayerNum() == player)
+		return mKeyboardInputConfig;
+
+	for(int i = 0; i < mNumJoysticks; i++)
+	{
+		if(mInputConfigs[i]->getPlayerNum() == player)
+			return mInputConfigs[i];
+	}
+
+	std::cout << "Could not find input config for player number " << player << "! Expect a crash.\n";
+	return NULL;
 }
 
 void InputManager::parseEvent(const SDL_Event& ev)
@@ -97,7 +113,7 @@ void InputManager::parseEvent(const SDL_Event& ev)
 				else
 					normValue = -1;
 
-			mWindow->input(getInputConfig(ev.jaxis.which), Input(ev.jaxis.which, TYPE_AXIS, ev.jaxis.axis, normValue, false));
+			mWindow->input(getInputConfigByDevice(ev.jaxis.which), Input(ev.jaxis.which, TYPE_AXIS, ev.jaxis.axis, normValue, false));
 		}
 
 		mPrevAxisValues[ev.jaxis.which][ev.jaxis.axis] = ev.jaxis.value;
@@ -105,11 +121,11 @@ void InputManager::parseEvent(const SDL_Event& ev)
 
 	case SDL_JOYBUTTONDOWN:
 	case SDL_JOYBUTTONUP:
-		mWindow->input(getInputConfig(ev.jbutton.which), Input(ev.jbutton.which, TYPE_BUTTON, ev.jbutton.button, ev.jbutton.state == SDL_PRESSED, false));
+		mWindow->input(getInputConfigByDevice(ev.jbutton.which), Input(ev.jbutton.which, TYPE_BUTTON, ev.jbutton.button, ev.jbutton.state == SDL_PRESSED, false));
 		break;
 
 	case SDL_JOYHATMOTION:
-		mWindow->input(getInputConfig(ev.jhat.which), Input(ev.jhat.which, TYPE_HAT, ev.jhat.hat, ev.jhat.value, false));
+		mWindow->input(getInputConfigByDevice(ev.jhat.which), Input(ev.jhat.which, TYPE_HAT, ev.jhat.hat, ev.jhat.value, false));
 		break;
 
 	case SDL_KEYDOWN:
@@ -121,11 +137,11 @@ void InputManager::parseEvent(const SDL_Event& ev)
 			return;
 		}
 
-		mWindow->input(getInputConfig(DEVICE_KEYBOARD), Input(DEVICE_KEYBOARD, TYPE_KEY, ev.key.keysym.sym, 1, false));
+		mWindow->input(getInputConfigByDevice(DEVICE_KEYBOARD), Input(DEVICE_KEYBOARD, TYPE_KEY, ev.key.keysym.sym, 1, false));
 		break;
 
 	case SDL_KEYUP:
-		mWindow->input(getInputConfig(DEVICE_KEYBOARD), Input(DEVICE_KEYBOARD, TYPE_KEY, ev.key.keysym.sym, 0, false));
+		mWindow->input(getInputConfigByDevice(DEVICE_KEYBOARD), Input(DEVICE_KEYBOARD, TYPE_KEY, ev.key.keysym.sym, 0, false));
 		break;
 	}
 }

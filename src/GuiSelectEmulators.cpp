@@ -57,7 +57,7 @@ void GuiSelectEmulators::loadSystemConfigs()
 	{
 		if(path[i].empty() || !fs::is_directory(path[i]))
 			continue;
-		
+
 		searchDirForConfigs(path[i], ".xml", true);
 	}
 
@@ -115,7 +115,7 @@ void GuiSelectEmulators::input(InputConfig* config, Input input)
 			//selected an emulator to toggle
 			if(mList.getSelectedImage() == &mUncheckedImage)
 				mList.changeSelectedImage(&mCheckedImage);
-			else 
+			else
 				mList.changeSelectedImage(&mUncheckedImage);
 		}else{
 			//selected an option

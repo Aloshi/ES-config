@@ -41,7 +41,7 @@ public:
 		{
 			if(this->mCursor == i)
 			{
-				Renderer::drawRect(0, y - 4, Renderer::getWidth(), entrySize, 0x2222FFFF);
+				Renderer::drawRect(this->getOffsetX(), y - 4, Renderer::getWidth()-this->getOffsetX(), entrySize, 0x2222FFFF);
 			}
 
 			ListEntry* entry = &mEntries.at((unsigned int)i);
