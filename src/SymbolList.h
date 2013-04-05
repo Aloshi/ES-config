@@ -84,7 +84,11 @@ public:
 	}
 
 	int getLength() { return mEntries.size(); }
-	void clear() { mEntries.clear(); }
+	void clear()
+	{
+		this->mCursor = 0;
+		mEntries.clear();
+	}
 
 private:
 	struct ListEntry

@@ -20,7 +20,8 @@ private:
 	Image mImageDone;
 	Image mImageNotDone;
 
-	SymbolList<InputData*> mList;
+	SymbolList<InputData*> mInputList;
+	SymbolList<Input*> mMappedList;
 
 	void populateList();
 

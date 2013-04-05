@@ -5,6 +5,7 @@
 InputManager::InputManager(Window* window) : mWindow(window)
 {
 	mJoysticks = NULL;
+	mKeyboardInputConfig = NULL;
 	mNumJoysticks = 0;
 }
 
@@ -36,6 +37,8 @@ void InputManager::init()
 		}
 	}
 
+	mKeyboardInputConfig = new InputConfig(DEVICE_KEYBOARD);
+
 	SDL_JoystickEventState(SDL_ENABLE);
 }
 
@@ -54,10 +57,13 @@ void InputManager::deinit()
 			delete mInputConfigs[i];
 		}
 
+		delete mKeyboardInputConfig;
+
 		delete[] mJoysticks;
 		delete[] mInputConfigs;
 		delete[] mPrevAxisValues;
 		mJoysticks = NULL;
+		mKeyboardInputConfig = NULL;
 		mInputConfigs = NULL;
 	}
 
@@ -65,7 +71,14 @@ void InputManager::deinit()
 }
 
 int InputManager::getNumDevices() { return mNumJoysticks; }
-InputConfig* InputManager::getInputConfig(int device) { return mInputConfigs[device]; }
+
+InputConfig* InputManager::getInputConfig(int device)
+{
+	if(device == DEVICE_KEYBOARD)
+		return mKeyboardInputConfig;
+	else
+		return mInputConfigs[device];
+}
 
 void InputManager::parseEvent(const SDL_Event& ev)
 {
@@ -105,6 +118,14 @@ void InputManager::parseEvent(const SDL_Event& ev)
 			SDL_Event* quit = new SDL_Event();
 			quit->type = SDL_QUIT;
 			SDL_PushEvent(quit);
+			return;
 		}
+
+		mWindow->input(getInputConfig(DEVICE_KEYBOARD), Input(DEVICE_KEYBOARD, TYPE_KEY, ev.key.keysym.sym, 1, false));
+		break;
+
+	case SDL_KEYUP:
+		mWindow->input(getInputConfig(DEVICE_KEYBOARD), Input(DEVICE_KEYBOARD, TYPE_KEY, ev.key.keysym.sym, 0, false));
+		break;
 	}
 }

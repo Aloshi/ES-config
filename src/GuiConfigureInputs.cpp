@@ -5,17 +5,20 @@
 #include <SDL.h>
 
 GuiConfigureInputs::GuiConfigureInputs(Window* window, std::vector<EmulatorData*> systems) : Gui(window), 
-	mImageDone("done.png"), mImageNotDone("notdone.png"), mList(window), mSystems(systems)
+	mImageDone("done.png"), mImageNotDone("notdone.png"), mInputList(window), mMappedList(window), mSystems(systems)
 {
 	mCurrentPlayer = 0;
 
-	mList.setPosition(5, 40);
+	mInputList.setPosition(5, 40);
+	mMappedList.setPosition(Renderer::getWidth() / 2 - 5, 40);
+
 	populateList();
 }
 
 void GuiConfigureInputs::populateList()
 {
-	mList.clear();
+	mInputList.clear();
+	mMappedList.clear();
 
 	for(unsigned int i = 0; i < mSystems.size(); i++)
 	{
@@ -33,18 +36,20 @@ void GuiConfigureInputs::populateList()
 				img = &mImageNotDone;
 			}
 
-			mList.addItem(inputData, inputData->name, img);
+			mInputList.addItem(inputData, inputData->name, img);
+			mMappedList.addItem(NULL, mWindow->getInputManager()->getInputConfig(mCurrentPlayer)->getInputByName(inputData->name).string(), NULL);
 		}
 	}
 
-	mList.addItem(NULL, "TEST", NULL);
-	mList.addItem(NULL, "SAVE", NULL);
-	mList.addItem(NULL, "QUIT", NULL);
+	mInputList.addItem(NULL, "TEST", NULL);
+	mInputList.addItem(NULL, "SAVE", NULL);
+	mInputList.addItem(NULL, "QUIT", NULL);
 }
 
 void GuiConfigureInputs::input(InputConfig* config, Input input)
 {
-	mList.input(config, input);
+	mInputList.input(config, input);
+	mMappedList.input(config, input);
 
 	if(input.value == 0)
 		return;
@@ -57,15 +62,15 @@ void GuiConfigureInputs::input(InputConfig* config, Input input)
 	if(config->isMappedTo("a", input))
 	{
 		//selected an option
-		if(mList.getSelected() == NULL)
+		if(mInputList.getSelected() == NULL)
 		{
-			if(mList.getSelectedText() == "TEST")
+			if(mInputList.getSelectedText() == "TEST")
 			{
 				mWindow->pushGui(new GuiTestConfigs(mWindow));
-			}else if(mList.getSelectedText() == "SAVE")
+			}else if(mInputList.getSelectedText() == "SAVE")
 			{
 				done();
-			}else if(mList.getSelectedText() == "QUIT")
+			}else if(mInputList.getSelectedText() == "QUIT")
 			{
 				//push a quit event to the SDL stack
 				SDL_Event* quit = new SDL_Event();
@@ -74,8 +79,8 @@ void GuiConfigureInputs::input(InputConfig* config, Input input)
 			}
 		}else{
 			//selected an input to change
-			mWindow->pushGui(new GuiChangeInput(mWindow, config->getPlayerNum(), mList.getSelected()->name));
-			mList.changeSelectedImage(&mImageDone);
+			mWindow->pushGui(new GuiChangeInput(mWindow, config->getPlayerNum(), mInputList.getSelected()->name));
+			mInputList.changeSelectedImage(&mImageDone); //change this to depend on result of GuiChangeInput
 		}
 	}
 }
@@ -103,7 +108,8 @@ void GuiConfigureInputs::done()
 
 void GuiConfigureInputs::update(int deltaTime)
 {
-	mList.update(deltaTime);
+	mInputList.update(deltaTime);
+	mMappedList.update(deltaTime);
 }
 
 void GuiConfigureInputs::render()
@@ -112,5 +118,6 @@ void GuiConfigureInputs::render()
 		return;
 
 	Renderer::drawCenteredText("ASSIGN INPUTS", 2, 0xFF00FFFF);
-	mList.render();
+	mInputList.render();
+	mMappedList.render();
 }

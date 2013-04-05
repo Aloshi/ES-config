@@ -114,7 +114,6 @@ bool parseArgs(int argc, char* argv[])
 			//must end in a slash
 			if(RESOURCE_PREFIX[RESOURCE_PREFIX.length() - 1] != '/')
 				RESOURCE_PREFIX += '/';
-			
 			i += 2;
 		}
 	}
@@ -162,6 +161,7 @@ int main(int argc, char *argv[])
 			case SDL_JOYAXISMOTION:
 			case SDL_JOYHATMOTION:
 			case SDL_KEYDOWN:
+			case SDL_KEYUP:
 				window.getInputManager()->parseEvent(ev);
 				break;
 

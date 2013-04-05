@@ -32,6 +32,7 @@ private:
 	int mNumJoysticks;
 	SDL_Joystick** mJoysticks;
 	InputConfig** mInputConfigs;
+	InputConfig* mKeyboardInputConfig;
 	std::map<int, int>* mPrevAxisValues;
 };
 

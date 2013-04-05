@@ -4,12 +4,16 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <SDL.h>
+
+#define DEVICE_KEYBOARD -1
 
 enum InputType
 {
 	TYPE_AXIS,
 	TYPE_BUTTON,
 	TYPE_HAT,
+	TYPE_KEY,
 	TYPE_COUNT
 };
 
@@ -24,7 +28,7 @@ public:
 
 	Input()
 	{
-		device = -1;
+		device = DEVICE_KEYBOARD;
 		configured = false;
 		id = -1;
 		value = -999;
@@ -33,6 +37,52 @@ public:
 
 	Input(int dev, InputType t, int i, int val, bool conf) : device(dev), type(t), id(i), value(val), configured(conf)
 	{
+	}
+
+	std::string getHatDir(int value)
+	{
+		if(value & SDL_HAT_UP)
+			return "up";
+		if(value & SDL_HAT_DOWN)
+			return "down";
+		if(value & SDL_HAT_RIGHT)
+			return "right";
+		if(value & SDL_HAT_LEFT)
+			return "left";
+
+		return "neutral?";
+	}
+
+	std::string string()
+	{
+		if(!configured)
+			return "";
+
+		std::string str;
+		switch(type)
+		{
+			case TYPE_BUTTON:
+				str = "Button ";
+				str += id;
+				break;
+			case TYPE_AXIS:
+				str = "Axis ";
+				str += id;
+				str += value > 0 ? "+" : "-";
+				break;
+			case TYPE_HAT:
+				str = "Hat ";
+				str += id + " " + getHatDir(value);
+				break;
+			case TYPE_KEY: //might want to use SDL_GetKeyName(SDLKey key), not sure if we can, will return gibberish if val < 0 (non-alphanum key)
+				str = "Key ";
+				str += (char)value;
+			default:
+				str = "Input to string error";
+				break;
+		}
+
+		return str;
 	}
 };
 
