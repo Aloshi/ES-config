@@ -84,13 +84,28 @@ public:
 
 	void setCentered(bool center) { mCentered = center; };
 
+	void setCursorColor(int color) { mCursorColor = color; };
+
 	virtual int getLength() = 0;
 	virtual void clear() = 0;
+
+	virtual int getSelectedIndex() { return mCursor; };
+	virtual void setSelectedIndex(int index)
+	{
+		if(index < 0)
+			index = 0;
+		if(index >= getLength())
+			index = getLength() - 1;
+
+		mCursor = index;
+	}
 
 protected:
 	int mOffsetX;
 	int mOffsetY;
 	bool mCentered;
+
+	int mCursorColor;
 
 	bool mScrolling;
 	int mScrollTimer;

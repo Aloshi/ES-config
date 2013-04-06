@@ -13,6 +13,10 @@ public:
 	void render();
 
 private:
+	void done();
+
+	bool mHoldingFinish;
+	int mFinishTimer;
 	int mCurrentPlayer;
 };
 

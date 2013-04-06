@@ -10,7 +10,10 @@ template<typename ListType>
 class SymbolList : public List<ListType>
 {
 public:
-	SymbolList(Window* window) : List<ListType>(window) { };
+	SymbolList(Window* window) : List<ListType>(window)
+	{
+		setCursorColor(0x2222FFFF);
+	}
 
 	virtual void render()
 	{
@@ -41,7 +44,7 @@ public:
 		{
 			if(this->mCursor == i)
 			{
-				Renderer::drawRect(this->getOffsetX(), y - 4, Renderer::getWidth()-this->getOffsetX(), entrySize, 0x2222FFFF);
+				Renderer::drawRect(this->getOffsetX(), y - 4, Renderer::getWidth()-this->getOffsetX(), entrySize, mCursorColor);
 			}
 
 			ListEntry* entry = &mEntries.at((unsigned int)i);
@@ -81,6 +84,11 @@ public:
 	void changeSelectedImage(Image* img)
 	{
 		mEntries.at(this->mCursor).image = img;
+	}
+
+	void changeSelectedText(const std::string& text)
+	{
+		mEntries.at(this->mCursor).text = text;
 	}
 
 	int getLength() { return mEntries.size(); }

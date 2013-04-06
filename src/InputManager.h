@@ -18,11 +18,13 @@ public:
 	void init();
 	void deinit();
 
-	int getNumDevices();
+	void setNumPlayers(int num);
+	int getNumPlayers();
+
+	int getNumJoysticks();
 
 	void parseEvent(const SDL_Event& ev);
 
-	InputConfig* getInputConfigByDevice(int device);
 	InputConfig* getInputConfigByPlayer(int player);
 
 private:
@@ -30,7 +32,11 @@ private:
 
 	Window* mWindow;
 
+	//non-InputManager classes shouldn't use this, as you can easily miss the keyboard
+	InputConfig* getInputConfigByDevice(int device);
+
 	int mNumJoysticks;
+	int mNumPlayers;
 	SDL_Joystick** mJoysticks;
 	InputConfig** mInputConfigs;
 	InputConfig* mKeyboardInputConfig;

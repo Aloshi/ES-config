@@ -8,6 +8,7 @@ InputManager::InputManager(Window* window) : mWindow(window)
 	mJoysticks = NULL;
 	mKeyboardInputConfig = NULL;
 	mNumJoysticks = 0;
+	mNumPlayers = 0;
 }
 
 InputManager::~InputManager()
@@ -71,7 +72,10 @@ void InputManager::deinit()
 	SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
 }
 
-int InputManager::getNumDevices() { return mNumJoysticks; }
+int InputManager::getNumJoysticks() { return mNumJoysticks; }
+
+int InputManager::getNumPlayers() { return mNumPlayers; }
+void InputManager::setNumPlayers(int num) { mNumPlayers = num; }
 
 InputConfig* InputManager::getInputConfigByDevice(int device)
 {
@@ -92,7 +96,7 @@ InputConfig* InputManager::getInputConfigByPlayer(int player)
 			return mInputConfigs[i];
 	}
 
-	std::cout << "Could not find input config for player number " << player << "! Expect a crash.\n";
+	std::cout << "Could not find input config for player number " << player << "!\n";
 	return NULL;
 }
 

@@ -212,7 +212,7 @@ bool EmulatorData::write(std::vector<InputConfig*> configs)
 			if(cont->Execute() != asEXECUTION_FINISHED)
 			{
 				std::cout << "Per-Input script crashed on input named [" << inputData->name << "]!\n";
-				continue;
+				return false;
 			}
 
 			cont->Prepare(inputData->getWriteFunction(mScriptModule));
@@ -220,7 +220,7 @@ bool EmulatorData::write(std::vector<InputConfig*> configs)
 			if(cont->Execute() != asEXECUTION_FINISHED)
 			{
 				std::cout << "Input [" << inputData->name << "] write script crashed!\n";
-				continue;
+				return false;
 			}
 		}
 	}

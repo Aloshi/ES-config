@@ -20,6 +20,11 @@ InputConfig::InputConfig(int deviceId) : mDeviceId(deviceId)
 	mPlayerNum = -1;
 }
 
+void InputConfig::clear()
+{
+	mInputMap.clear();
+}
+
 Input InputConfig::getInputByName(const std::string& name)
 {
 	return mInputMap[toLower(name)];

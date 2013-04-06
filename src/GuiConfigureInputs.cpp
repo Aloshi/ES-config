@@ -3,6 +3,7 @@
 #include "GuiMessage.h"
 #include "GuiChangeInput.h"
 #include <SDL.h>
+#include "Util.h"
 
 GuiConfigureInputs::GuiConfigureInputs(Window* window, std::vector<EmulatorData*> systems) : Gui(window), 
 	mImageDone("done.png"), mImageNotDone("notdone.png"), mInputList(window), mMappedList(window), mSystems(systems)
@@ -17,6 +18,8 @@ GuiConfigureInputs::GuiConfigureInputs(Window* window, std::vector<EmulatorData*
 
 void GuiConfigureInputs::populateList()
 {
+	int restoreIndex = mInputList.getSelectedIndex();
+
 	mInputList.clear();
 	mMappedList.clear();
 
@@ -50,10 +53,34 @@ void GuiConfigureInputs::populateList()
 	mMappedList.addItem(NULL, "", NULL);
 	mMappedList.addItem(NULL, "", NULL);
 	mMappedList.addItem(NULL, "", NULL);
+
+	mInputList.setCursorColor(getPlayerColor(mCurrentPlayer));
+	mMappedList.setCursorColor(getPlayerColor(mCurrentPlayer));
+
+	mInputList.setSelectedIndex(restoreIndex);
+	mMappedList.setSelectedIndex(restoreIndex);
+}
+
+void GuiConfigureInputs::updateList()
+{
+	InputConfig* curCfg = mWindow->getInputManager()->getInputConfigByPlayer(mCurrentPlayer);
+
+	mMappedList.changeSelectedText(curCfg->getInputByName(mInputList.getSelected()->name).string());
+
+	if(curCfg->getInputByName(mInputList.getSelected()->name).configured)
+		mInputList.changeSelectedImage(&mImageDone);
+	else
+		mInputList.changeSelectedImage(&mImageNotDone);
 }
 
 void GuiConfigureInputs::input(InputConfig* config, Input input)
 {
+	if(config->getPlayerNum() != -1 && config->getPlayerNum() != mCurrentPlayer)
+	{
+		mCurrentPlayer = config->getPlayerNum();
+		populateList();
+	}
+
 	mInputList.input(config, input);
 	mMappedList.input(config, input);
 
@@ -85,8 +112,7 @@ void GuiConfigureInputs::input(InputConfig* config, Input input)
 			}
 		}else{
 			//selected an input to change
-			mWindow->pushGui(new GuiChangeInput(mWindow, config->getPlayerNum(), mInputList.getSelected()->name));
-			mInputList.changeSelectedImage(&mImageDone); //change this to depend on result of GuiChangeInput
+			mWindow->pushGui(new GuiChangeInput(mWindow, config->getPlayerNum(), mInputList.getSelected()->name, this));
 		}
 	}
 }
@@ -94,18 +120,31 @@ void GuiConfigureInputs::input(InputConfig* config, Input input)
 void GuiConfigureInputs::done()
 {
 	std::vector<InputConfig*> configs;
-	for(int i = 0; i < mWindow->getInputManager()->getNumDevices(); i++)
+	for(int i = 0; i < mWindow->getInputManager()->getNumPlayers(); i++)
 	{
-		configs.push_back(mWindow->getInputManager()->getInputConfigByPlayer(i));
+		InputConfig* cfg = mWindow->getInputManager()->getInputConfigByPlayer(i);
+		
+		if(cfg->getPlayerNum() != -1)
+			configs.push_back(cfg);
 	}
 
+
+	bool success = true;
 	for(unsigned int i = 0; i < mSystems.size(); i++)
 	{
 		EmulatorData* system = mSystems.at(i);
-		system->write(configs);
+		success = system->write(configs);
+
+		if(!success)
+			break;
 	}
 
-	std::string msg[1] = {"Done!"};
+	std::string msg[1];
+	if(success)
+		msg[0] = "Done!";
+	else
+		msg[0] = "Error!!";
+
 	mWindow->pushGui(new GuiMessage(mWindow, msg, 1));
 }
 
@@ -122,5 +161,5 @@ void GuiConfigureInputs::render()
 
 	Renderer::drawCenteredText("ASSIGN INPUTS", 2, 0xFF00FFFF);
 	mInputList.render();
-	//mMappedList.render(); //input.string() isn't quite right yet
+	mMappedList.render();
 }

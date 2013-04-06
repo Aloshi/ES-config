@@ -1,7 +1,9 @@
 #include "GuiChangeInput.h"
 #include "Renderer.h"
+#include "GuiConfigureInputs.h"
 
-GuiChangeInput::GuiChangeInput(Window* window, int playerNum, const std::string& inputName) : Gui(window), mPlayerNum(playerNum), mInputName(inputName)
+GuiChangeInput::GuiChangeInput(Window* window, int playerNum, const std::string& inputName, GuiConfigureInputs* updateOnDone) : Gui(window), mPlayerNum(playerNum), 
+	mInputName(inputName), mUpdateOnDone(updateOnDone)
 {
 }
 
@@ -13,6 +15,7 @@ void GuiChangeInput::input(InputConfig* config, Input input)
 	input.configured = true;
 	config->setInput(mInputName, input);
 
+	mUpdateOnDone->updateList();
 	delete this;
 }
 

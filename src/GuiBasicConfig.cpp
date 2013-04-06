@@ -38,8 +38,8 @@ void GuiBasicConfig::input(InputConfig* config, Input input)
 		}
 
 		input.configured = true;
-		std::cout << "[type " << input.type << ", id " << input.id << ", val " << input.value << "] -> " << inputName[mCurInputId] << "\n";
-
+		std::cout << "[" << input.string() << "] -> " << inputName[mCurInputId] << "\n";
+		
 		config->setInput(inputName[mCurInputId], input);
 		mCurInputId++;
 		mErrorMsg = "";

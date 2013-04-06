@@ -16,6 +16,8 @@ public:
 	void update(int deltaTime);
 	void render();
 
+	void updateList();
+
 private:
 	Image mImageDone;
 	Image mImageNotDone;

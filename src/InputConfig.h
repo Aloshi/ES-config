@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <SDL.h>
+#include <sstream>
+#include "Util.h"
 
 #define DEVICE_KEYBOARD -1
 
@@ -39,51 +41,32 @@ public:
 	{
 	}
 
-	std::string getHatDir(int value)
-	{
-		if(value & SDL_HAT_UP)
-			return "up";
-		if(value & SDL_HAT_DOWN)
-			return "down";
-		if(value & SDL_HAT_RIGHT)
-			return "right";
-		if(value & SDL_HAT_LEFT)
-			return "left";
-
-		return "neutral?";
-	}
-
 	std::string string()
 	{
 		if(!configured)
 			return "";
 
-		std::string str;
+		std::stringstream stream;
 		switch(type)
 		{
 			case TYPE_BUTTON:
-				str = "Button ";
-				str += id;
+				stream << "Button " << id;
 				break;
 			case TYPE_AXIS:
-				str = "Axis ";
-				str += id;
-				str += value > 0 ? "+" : "-";
+				stream << "Axis " << id << (value > 0 ? "+" : "-");
 				break;
 			case TYPE_HAT:
-				str = "Hat ";
-				str += id + " " + getHatDir(value);
+				stream << "Hat " << id << " " << getHatDir(value);
 				break;
-			case TYPE_KEY: //might want to use SDL_GetKeyName(SDLKey key), not sure if we can, will return gibberish if val < 0 (non-alphanum key)
-				str = "Key ";
-				str += (char)value;
+			case TYPE_KEY:
+				stream << "Key " << SDL_GetKeyName((SDLKey)id);
 				break;
 			default:
-				str = "Input to string error";
+				stream << "Input to string error";
 				break;
 		}
 
-		return str;
+		return stream.str();
 	}
 };
 
@@ -92,6 +75,7 @@ class InputConfig
 public:
 	InputConfig(int deviceId);
 
+	void clear();
 	void setInput(const std::string& name, Input input);
 	void setPlayerNum(int num);
 
@@ -104,7 +88,7 @@ public:
 
 private:
 	std::map<std::string, Input> mInputMap;
-	int mDeviceId;
+	const int mDeviceId;
 	int mPlayerNum;
 };
 

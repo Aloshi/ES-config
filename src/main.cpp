@@ -42,50 +42,43 @@ asIScriptEngine* setUpScriptEngine()
 	asIScriptEngine* engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
 
 	int r;
-	r = engine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);
-
-	if(r < 0)
-	{
-		std::cout << "Could not set message callback on engine!\n";
-	}
+	r = engine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);   assert(r >= 0);
 
 	//initialize array and string angelscript addons
 	RegisterScriptArray(engine, true);
 	RegisterStdString(engine);
 
 	//register print function (for debugging)
-	r = engine->RegisterGlobalFunction("void print(const string &in)", asFUNCTION(print), asCALL_CDECL);
-	if(r < 0)
-	{
-		std::cout << "Could not register print function!\n";
-	}
+	r = engine->RegisterGlobalFunction("void print(const string &in)", asFUNCTION(print), asCALL_CDECL);   assert(r >= 0);
 
 	//register file stuff
-	r = engine->RegisterObjectType("File", 0, asOBJ_REF | asOBJ_NOCOUNT);
-	if(r < 0)
-	{
-		std::cout << "Could not register File object type!\n";
-	}
-
-	r = engine->RegisterObjectMethod("File", "void write(const string &in)", asMETHOD(FileWriter, write), asCALL_THISCALL);
-	if(r < 0)
-	{
-		std::cout << "Could not register File.write!\n";
-	}
+	r = engine->RegisterObjectType("File", 0, asOBJ_REF | asOBJ_NOCOUNT);   assert(r >= 0);
+	r = engine->RegisterObjectMethod("File", "void write(const string &in)", asMETHOD(FileWriter, write), asCALL_THISCALL);   assert(r >= 0);
 
 	//register InputType enum
-	r = engine->RegisterEnum("InputType");
-	r = engine->RegisterEnumValue("InputType", "TYPE_AXIS", TYPE_AXIS);
-	r = engine->RegisterEnumValue("InputType", "TYPE_BUTTON", TYPE_BUTTON);
-	r = engine->RegisterEnumValue("InputType", "TYPE_HAT", TYPE_HAT);
+	r = engine->RegisterEnum("InputType");   assert(r >= 0);
+	r = engine->RegisterEnumValue("InputType", "TYPE_AXIS", TYPE_AXIS);   assert(r >= 0);
+	r = engine->RegisterEnumValue("InputType", "TYPE_BUTTON", TYPE_BUTTON);   assert(r >= 0);
+	r = engine->RegisterEnumValue("InputType", "TYPE_HAT", TYPE_HAT);   assert(r >= 0);
+	r = engine->RegisterEnumValue("InputType", "TYPE_KEY", TYPE_KEY);   assert(r >= 0);
+	r = engine->RegisterEnumValue("InputType", "TYPE_COUNT", TYPE_COUNT);   assert(r >= 0);
+
+	//register DEVICE_KEYBOARD constant
+	r = engine->RegisterEnum("Device");   assert(r >= 0);
+	r = engine->RegisterEnumValue("Device", "DEVICE_KEYBOARD", DEVICE_KEYBOARD);   assert(r >= 0);
 
 	//register SDL_HAT "enum"
-	r = engine->RegisterEnum("Hat");
-	r = engine->RegisterEnumValue("Hat", "HAT_UP", SDL_HAT_UP);
-	r = engine->RegisterEnumValue("Hat", "HAT_DOWN", SDL_HAT_DOWN);
-	r = engine->RegisterEnumValue("Hat", "HAT_LEFT", SDL_HAT_LEFT);
-	r = engine->RegisterEnumValue("Hat", "HAT_RIGHT", SDL_HAT_RIGHT);
+	r = engine->RegisterEnum("Hat");   assert(r >= 0);
+	r = engine->RegisterEnumValue("Hat", "HAT_UP", SDL_HAT_UP);   assert(r >= 0);
+	r = engine->RegisterEnumValue("Hat", "HAT_DOWN", SDL_HAT_DOWN);   assert(r >= 0);
+	r = engine->RegisterEnumValue("Hat", "HAT_LEFT", SDL_HAT_LEFT);   assert(r >= 0);
+	r = engine->RegisterEnumValue("Hat", "HAT_RIGHT", SDL_HAT_RIGHT);   assert(r >= 0);
 
+	//register get key name function
+	r = engine->RegisterGlobalFunction("string getKeyName(int id)", asFUNCTION(getKeyName), asCALL_CDECL);   assert(r >= 0);
+
+	//register hat -> string function
+	r = engine->RegisterGlobalFunction("string getHatDir(int val)", asFUNCTION(getHatDir), asCALL_CDECL);   assert(r >= 0);
 
 	return engine;
 }
