@@ -7,7 +7,7 @@ Building
 ========
 
 As some of the dependencies are not in the Debian repositories, getting dependencies is a little bit complicated.
-To solve that, **I've written a short Bash script named "get_dependencies.sh" that does everything for you**, including install AngelScript.
+To solve that, **I've written a short Bash script named "get_dependencies.sh" that does everything for you**, including install AngelScript. You can run it with `./get_dependencies`.
 
 OR, If you want it install everything yourself, you'll need these dependencies:
 ```
@@ -38,10 +38,9 @@ notdone.png - icon for input unconfigured
 font.ttf - font used throughout
 ```
 
-As this is primarily an input configuration interface, it is not currently navigatable with the keyboard.
 F4 will close the application if it hasn't frozen.
 
-This is still a work-in-progress! In particular, multi-player support isn't quite working.
+This is still a work-in-progress!
 
 -Aloshi
 http://www.aloshi.com
