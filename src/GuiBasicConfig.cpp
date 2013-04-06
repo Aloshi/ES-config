@@ -8,7 +8,7 @@ static int inputCount = 6;
 static std::string inputName[6] = { "Up", "Down", "Left", "Right", "A", "B"};
 static std::string inputLoc[6] = {LOCATION_UP, LOCATION_DOWN, LOCATION_LEFT, LOCATION_RIGHT, LOCATION_ACCEPT, LOCATION_BACK};
 
-GuiBasicConfig::GuiBasicConfig(Window* window, InputConfig* target) : Gui(window), mTargetConfig(target), mCheckedImage("checked.png")
+GuiBasicConfig::GuiBasicConfig(Window* window, InputConfig* target) : Gui(window), mTargetConfig(target), mCheckedImage("done.png")
 {
 	mCurInputId = 0;
 }
