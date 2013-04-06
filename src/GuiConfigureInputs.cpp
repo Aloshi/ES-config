@@ -33,8 +33,25 @@ void GuiConfigureInputs::populateList()
 		{
 			InputData* inputData = system->getInput(k);
 
+			//need to check for duplicates here
+			int dupeLocation = -1;
+			for(int j = 0; j < mInputList.getLength(); j++)
+			{
+				if(toLower(mInputList.getItem(j)->location) == toLower(inputData->location))
+				{
+					dupeLocation = j;
+					break;
+				}
+			}
+
+			if(dupeLocation != -1)
+			{
+				//might wanna make an indication on the list that this input is mapped to X, but screw it
+				continue;
+			}
+
 			Image* img;
-			if(config->getInputByName(inputData->name).configured)
+			if(config->getInputByLocation(inputData->location).configured)
 			{
 				img = &mImageDone;
 			}else{
@@ -42,7 +59,7 @@ void GuiConfigureInputs::populateList()
 			}
 
 			mInputList.addItem(inputData, inputData->name, img);
-			mMappedList.addItem(NULL, config->getInputByName(inputData->name).string(), NULL);
+			mMappedList.addItem(NULL, config->getInputByLocation(inputData->location).string(), NULL);
 		}
 	}
 
@@ -65,9 +82,9 @@ void GuiConfigureInputs::updateList()
 {
 	InputConfig* curCfg = mWindow->getInputManager()->getInputConfigByPlayer(mCurrentPlayer);
 
-	mMappedList.changeSelectedText(curCfg->getInputByName(mInputList.getSelected()->name).string());
+	mMappedList.changeSelectedText(curCfg->getInputByLocation(mInputList.getSelected()->location).string());
 
-	if(curCfg->getInputByName(mInputList.getSelected()->name).configured)
+	if(curCfg->getInputByLocation(mInputList.getSelected()->location).configured)
 		mInputList.changeSelectedImage(&mImageDone);
 	else
 		mInputList.changeSelectedImage(&mImageNotDone);
@@ -87,19 +104,19 @@ void GuiConfigureInputs::input(InputConfig* config, Input input)
 	if(input.value == 0)
 		return;
 
-	if(config->isMappedTo("b", input))
+	if(config->isMappedTo(LOCATION_BACK, input))
 	{
 		delete this;
 	}
 
-	if(config->isMappedTo("a", input))
+	if(config->isMappedTo(LOCATION_ACCEPT, input))
 	{
 		//selected an option
 		if(mInputList.getSelected() == NULL)
 		{
 			if(mInputList.getSelectedText() == "TEST")
 			{
-				mWindow->pushGui(new GuiTestConfigs(mWindow));
+				mWindow->pushGui(new GuiTestConfigs(mWindow, mSystems));
 			}else if(mInputList.getSelectedText() == "SAVE")
 			{
 				done();
@@ -112,7 +129,7 @@ void GuiConfigureInputs::input(InputConfig* config, Input input)
 			}
 		}else{
 			//selected an input to change
-			mWindow->pushGui(new GuiChangeInput(mWindow, config->getPlayerNum(), mInputList.getSelected()->name, this));
+			mWindow->pushGui(new GuiChangeInput(mWindow, config->getPlayerNum(), mInputList.getSelected(), this));
 		}
 	}
 }

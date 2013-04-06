@@ -10,6 +10,13 @@
 
 #define DEVICE_KEYBOARD -1
 
+#define LOCATION_ACCEPT "btnDown"
+#define LOCATION_BACK "btnRight"
+#define LOCATION_UP "up"
+#define LOCATION_DOWN "down"
+#define LOCATION_RIGHT "right"
+#define LOCATION_LEFT "left"
+
 enum InputType
 {
 	TYPE_AXIS,
@@ -76,18 +83,23 @@ public:
 	InputConfig(int deviceId);
 
 	void clear();
-	void setInput(const std::string& name, Input input);
+	void mapInput(const std::string& location, Input input);
 	void setPlayerNum(int num);
 
 	int getPlayerNum();
 	int getDeviceId();
-	Input getInputByName(const std::string& name);
 
-	bool isMappedTo(const std::string& name, Input input);
+	//Returns the input mapped to this location.
+	Input getInputByLocation(const std::string& location);
+
+	//Returns true if Input is mapped to this location, false otherwise.
+	bool isMappedTo(const std::string& location, Input input);
+
+	//Returns a list of locations this input is mapped to.
 	std::vector<std::string> getMappedTo(Input input);
 
 private:
-	std::map<std::string, Input> mInputMap;
+	std::map<std::string, Input> mLocationMap;
 	const int mDeviceId;
 	int mPlayerNum;
 };

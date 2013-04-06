@@ -2,8 +2,8 @@
 #include "Renderer.h"
 #include "GuiConfigureInputs.h"
 
-GuiChangeInput::GuiChangeInput(Window* window, int playerNum, const std::string& inputName, GuiConfigureInputs* updateOnDone) : Gui(window), mPlayerNum(playerNum), 
-	mInputName(inputName), mUpdateOnDone(updateOnDone)
+GuiChangeInput::GuiChangeInput(Window* window, int playerNum, InputData* inputData, GuiConfigureInputs* updateOnDone) : Gui(window), mPlayerNum(playerNum), 
+	mUpdateOnDone(updateOnDone), mInputData(inputData)
 {
 }
 
@@ -13,7 +13,7 @@ void GuiChangeInput::input(InputConfig* config, Input input)
 		return;
 	
 	input.configured = true;
-	config->setInput(mInputName, input);
+	config->mapInput(mInputData->location, input);
 
 	mUpdateOnDone->updateList();
 	delete this;
@@ -29,5 +29,5 @@ void GuiChangeInput::render()
 	Renderer::drawRect(x - 15, Renderer::getHeight() / 3 - 10, w + 15, Renderer::getFontSize() * 4 + 10, 0x00000000);
 
 	Renderer::drawCenteredText("PRESS INPUT FOR", Renderer::getHeight() / 3, 0xAAAAAAFF);
-	Renderer::drawCenteredText("[" + mInputName + "]", (int)(Renderer::getHeight() / 3) + Renderer::getFontSize() * 2, 0x00AA00FF);
+	Renderer::drawCenteredText("[" + mInputData->name + "]", (int)(Renderer::getHeight() / 3) + Renderer::getFontSize() * 2, 0x00AA00FF);
 }

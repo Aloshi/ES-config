@@ -6,6 +6,7 @@
 
 static int inputCount = 6;
 static std::string inputName[6] = { "Up", "Down", "Left", "Right", "A", "B"};
+static std::string inputLoc[6] = {LOCATION_UP, LOCATION_DOWN, LOCATION_LEFT, LOCATION_RIGHT, LOCATION_ACCEPT, LOCATION_BACK};
 
 GuiBasicConfig::GuiBasicConfig(Window* window, InputConfig* target) : Gui(window), mTargetConfig(target), mCheckedImage("checked.png")
 {
@@ -45,7 +46,7 @@ void GuiBasicConfig::input(InputConfig* config, Input input)
 		input.configured = true;
 		std::cout << "[" << input.string() << "] -> " << inputName[mCurInputId] << "\n";
 		
-		config->setInput(inputName[mCurInputId], input);
+		config->mapInput(inputLoc[mCurInputId], input);
 		mCurInputId++;
 		mErrorMsg = "";
 	}
@@ -65,12 +66,12 @@ void GuiBasicConfig::render()
 		y += mCheckedImage.getHeight() + 5;
 	}
 
-	Renderer::drawText(inputName[mCurInputId], mCheckedImage.getWidth() + 14, y, 0x000000FF);
-
 	if(mCurInputId >= inputCount)
 	{
 		Renderer::drawCenteredText("Basic config done!", (int)(Renderer::getHeight() * 0.6), 0x00CC00FF);
 		Renderer::drawCenteredText("Press any button to continue.", (int)(Renderer::getHeight() * 0.6) + Renderer::getFontSize() + 4, 0x000000FF);
+	}else{
+		Renderer::drawText(inputName[mCurInputId], mCheckedImage.getWidth() + 14, y, 0x000000FF);
 	}
 
 	if(!mErrorMsg.empty())

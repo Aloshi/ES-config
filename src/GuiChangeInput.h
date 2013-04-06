@@ -3,13 +3,14 @@
 
 #include "Gui.h"
 #include "Window.h"
+#include "EmulatorData.h"
 
 class GuiConfigureInputs;
 
 class GuiChangeInput : public Gui
 {
 public:
-	GuiChangeInput(Window* window, int playerNum, const std::string& inputName, GuiConfigureInputs* updateOnDone);
+	GuiChangeInput(Window* window, int playerNum, InputData* inputData, GuiConfigureInputs* updateOnDone);
 
 	void input(InputConfig* config, Input input);
 	void update(int deltaTime) { };
@@ -18,7 +19,7 @@ public:
 private:
 	GuiConfigureInputs* mUpdateOnDone;
 	int mPlayerNum;
-	std::string mInputName;
+	InputData* mInputData;
 };
 
 #endif

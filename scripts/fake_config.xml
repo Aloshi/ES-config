@@ -1,10 +1,10 @@
 <emulator>
 	<!-- Name as it will appear in the emulator select screen. !-->
-	<name>RetroArch</name>
-	<shortName>RA</shortName>
+	<name>Fake</name>
+	<shortName>fake</shortName>
 	
 	<!-- File we will write to. !-->
-	<configPath>retroarch.cfg</configPath>
+	<configPath>fake.cfg</configPath>
 	
 	<!-- Declare any global variables or functions here. They'll stay in scope across every script in this file. 
 	Not wrapped with anything. !-->

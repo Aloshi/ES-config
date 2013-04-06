@@ -32,6 +32,7 @@ EmulatorData::~EmulatorData()
 }
 
 std::string EmulatorData::getName() { return mName; }
+std::string EmulatorData::getShortName() { return mShortName; }
 std::string EmulatorData::getDescription() { return mDescription; }
 
 bool EmulatorData::loadFile(const std::string& path)
@@ -49,6 +50,16 @@ bool EmulatorData::loadFile(const std::string& path)
 
 
 	mName = root.child("name").text().get();
+	if(mName.empty())
+	{
+		std::cout << "Name for EmulatorData at path \"" << path << "\" is empty!\n";
+		return false;
+	}
+
+	mShortName = root.child("shortName").text().get();
+	if(mShortName.empty())
+		mShortName = mName;
+
 	mDescription = root.child("desc").text().get();
 	mConfigPath = root.child("configPath").text().get();
 
@@ -82,7 +93,7 @@ bool EmulatorData::loadFile(const std::string& path)
 
 	for(pugi::xml_node inputNode = root.child("input"); inputNode; inputNode = inputNode.next_sibling())
 	{
-		if(!addInput(builder, inputNode.attribute("name").as_string(), inputNode.text().get()))
+		if(!addInput(builder, inputNode.attribute("name").as_string(), inputNode.attribute("location").as_string(), inputNode.text().get()))
 		{
 			std::cout << "Could not add input!\n";
 			return false;
@@ -139,8 +150,14 @@ std::string stripSpecialChars(const std::string& str)
 	return ret;
 }
 
-bool EmulatorData::addInput(CScriptBuilder& builder, const std::string& name, const std::string& script)
+bool EmulatorData::addInput(CScriptBuilder& builder, const std::string& name, const std::string& location, const std::string& script)
 {
+	if(name.empty() || location.empty())
+	{
+		std::cout << "Name or Location for input is empty!\n";
+		return false;
+	}
+
 	std::string safeName = stripSpecialChars(name);
 	if(safeName.empty())
 	{
@@ -154,7 +171,7 @@ bool EmulatorData::addInput(CScriptBuilder& builder, const std::string& name, co
 	if(!success)
 		return false;
 
-	InputData* input = new InputData(name, funcSig);
+	InputData* input = new InputData(name, location, funcSig);
 	mInputs.push_back(input);
 	return true;
 }
@@ -195,7 +212,7 @@ bool EmulatorData::write(std::vector<InputConfig*> configs)
 		for(unsigned int i = 0; i < mInputs.size(); i++)
 		{
 			InputData* inputData = mInputs.at(i);
-			Input input = config->getInputByName(inputData->name);
+			Input input = config->getInputByLocation(inputData->location);
 
 			if(!input.configured)
 				continue;

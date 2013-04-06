@@ -108,7 +108,7 @@ void GuiSelectEmulators::input(InputConfig* config, Input input)
 {
 	mList.input(config, input);
 
-	if(input.value != 0 && config->isMappedTo("a", input))
+	if(input.value != 0 && config->isMappedTo(LOCATION_ACCEPT, input))
 	{
 		if(mList.getSelected() != NULL)
 		{

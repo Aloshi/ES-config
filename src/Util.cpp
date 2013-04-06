@@ -37,3 +37,14 @@ std::string getKeyName(int key)
 {
 	return SDL_GetKeyName((SDLKey)key);
 }
+
+std::string toLower(const std::string& name)
+{
+	std::string lowerName = name;
+	for(size_t i = 0; i < name.length(); i++)
+	{
+		lowerName[i] = tolower(name[i]);
+	}
+
+	return lowerName;
+}

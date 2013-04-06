@@ -13,7 +13,7 @@ GuiMessage::GuiMessage(Window* window, const std::string* msg, int msgCount) : G
 
 void GuiMessage::input(InputConfig* config, Input input)
 {
-	if(input.value != 0 && config->isMappedTo("a", input))
+	if(input.value != 0 && config->isMappedTo(LOCATION_ACCEPT, input))
 	{
 		delete this;
 	}

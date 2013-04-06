@@ -32,19 +32,19 @@ public:
 		if(input.value == 0)
 		{
 			//stop scrolling
-			if(config->isMappedTo("up", input) || config->isMappedTo("down", input))
+			if(config->isMappedTo(LOCATION_UP, input) || config->isMappedTo(LOCATION_DOWN, input))
 			{
 				mScrollTimer = 0;
 				mScrollDir = 0;
 				mScrolling = false;
 			}
 		}else{
-			if(config->isMappedTo("up", input))
+			if(config->isMappedTo(LOCATION_UP, input))
 			{
 				mScrollDir = -1;
 				scroll();
 			}
-			if(config->isMappedTo("down", input))
+			if(config->isMappedTo(LOCATION_DOWN, input))
 			{
 				mScrollDir = 1;
 				scroll();

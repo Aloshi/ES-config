@@ -4,17 +4,6 @@
 #include <SDL.h>
 #include <iostream>
 
-std::string toLower(const std::string& name)
-{
-	std::string lowerName = name;
-	for(size_t i = 0; i < name.length(); i++)
-	{
-		lowerName[i] = tolower(name[i]);
-	}
-
-	return lowerName;
-}
-
 InputConfig::InputConfig(int deviceId) : mDeviceId(deviceId)
 {
 	mPlayerNum = -1;
@@ -22,22 +11,22 @@ InputConfig::InputConfig(int deviceId) : mDeviceId(deviceId)
 
 void InputConfig::clear()
 {
-	mInputMap.clear();
+	mLocationMap.clear();
 }
 
-Input InputConfig::getInputByName(const std::string& name)
+void InputConfig::mapInput(const std::string& location, Input input)
 {
-	return mInputMap[toLower(name)];
+	mLocationMap[toLower(location)] = input;
 }
 
-void InputConfig::setInput(const std::string& name, Input input)
+Input InputConfig::getInputByLocation(const std::string& location)
 {
-	mInputMap[toLower(name)] = input;
+	return mLocationMap[toLower(location)];
 }
 
-bool InputConfig::isMappedTo(const std::string& name, Input input)
+bool InputConfig::isMappedTo(const std::string& location, Input input)
 {
-	Input comp = getInputByName(name);
+	Input comp = getInputByLocation(location);
 
 	if(comp.configured && comp.type == input.type && comp.id == input.id)
 	{
@@ -61,7 +50,7 @@ std::vector<std::string> InputConfig::getMappedTo(Input input)
 	std::vector<std::string> maps;
 
 	typedef std::map<std::string, Input>::iterator it_type;
-	for(it_type iterator = mInputMap.begin(); iterator != mInputMap.end(); iterator++)
+	for(it_type iterator = mLocationMap.begin(); iterator != mLocationMap.end(); iterator++)
 	{
 		Input chk = iterator->second;
 
