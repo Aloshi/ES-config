@@ -2,8 +2,8 @@
 #include "Renderer.h"
 #include "GuiConfigureInputs.h"
 
-GuiChangeInput::GuiChangeInput(Window* window, int playerNum, InputData* inputData, GuiConfigureInputs* updateOnDone) : Gui(window), mPlayerNum(playerNum), 
-	mUpdateOnDone(updateOnDone), mInputData(inputData)
+GuiChangeInput::GuiChangeInput(Window* window, int playerNum, InputData* inputData, GuiConfigureInputs* updateOnDone) : Gui(window),
+	mUpdateOnDone(updateOnDone), mPlayerNum(playerNum), mInputData(inputData)
 {
 }
 

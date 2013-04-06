@@ -12,7 +12,7 @@ class SymbolList : public List<ListType>
 public:
 	SymbolList(Window* window) : List<ListType>(window)
 	{
-		setCursorColor(0x2222FFFF);
+		this->setCursorColor(0x2222FFFF);
 	}
 
 	virtual void render()
@@ -44,7 +44,7 @@ public:
 		{
 			if(this->mCursor == i)
 			{
-				Renderer::drawRect(this->getOffsetX(), y - 4, Renderer::getWidth()-this->getOffsetX(), entrySize, mCursorColor);
+				Renderer::drawRect(this->getOffsetX(), y - 4, Renderer::getWidth()-this->getOffsetX(), entrySize, this->mCursorColor);
 			}
 
 			ListEntry* entry = &mEntries.at((unsigned int)i);
