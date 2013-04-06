@@ -3,6 +3,7 @@
 
 #include "Gui.h"
 #include <string>
+#include "Image.h"
 
 class GuiBasicConfig : public Gui
 {
@@ -12,10 +13,12 @@ public:
 	void input(InputConfig* config, Input input);
 	void update(int deltaTime);
 	void render();
+
 private:
 	std::string mErrorMsg;
 	InputConfig* mTargetConfig;
 	int mCurInputId;
+	Image mCheckedImage;
 };
 
 #endif

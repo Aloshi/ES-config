@@ -7,7 +7,7 @@
 static int inputCount = 6;
 static std::string inputName[6] = { "Up", "Down", "Left", "Right", "A", "B"};
 
-GuiBasicConfig::GuiBasicConfig(Window* window, InputConfig* target) : Gui(window), mTargetConfig(target)
+GuiBasicConfig::GuiBasicConfig(Window* window, InputConfig* target) : Gui(window), mTargetConfig(target), mCheckedImage("checked.png")
 {
 	mCurInputId = 0;
 }
@@ -27,7 +27,12 @@ void GuiBasicConfig::input(InputConfig* config, Input input)
 		//done
 		if(input.type == TYPE_BUTTON || input.type == TYPE_KEY)
 		{
-			mWindow->pushGui(new GuiSelectEmulators(mWindow));
+			if(mTargetConfig->getPlayerNum() < mWindow->getInputManager()->getNumPlayers() - 1)
+			{
+				mWindow->pushGui(new GuiBasicConfig(mWindow, mWindow->getInputManager()->getInputConfigByPlayer(mTargetConfig->getPlayerNum() + 1)));
+			}else{
+				mWindow->pushGui(new GuiSelectEmulators(mWindow));
+			}
 			delete this;
 		}
 	}else{
@@ -48,14 +53,26 @@ void GuiBasicConfig::input(InputConfig* config, Input input)
 
 void GuiBasicConfig::render()
 {
-	if(mCurInputId < inputCount)
-	{
-		Renderer::drawCenteredText("Please press [" + inputName[mCurInputId] + "].", Renderer::getHeight() / 3, 0x000000FF);
+	std::stringstream stream;
+	stream << "PLAYER " << mTargetConfig->getPlayerNum() + 1 << ", press...";
+	Renderer::drawText(stream.str(), 10, 10, getPlayerColor(mTargetConfig->getPlayerNum()));
 
-		if(!mErrorMsg.empty())
-			Renderer::drawCenteredText(mErrorMsg, (int)(Renderer::getHeight()*1.5) / 3, 0xFF0000FF);
-	}else{
-		Renderer::drawCenteredText("Basic config done!", Renderer::getHeight() / 3, 0x00CC00FF);
-		Renderer::drawCenteredText("Press any button to continue.", (int)(Renderer::getHeight()*1.5) / 3, 0x000000FF);
+	int y = 14 + Renderer::getFontSize();
+	for(int i = 0; i < mCurInputId; i++)
+	{
+		mCheckedImage.draw(10 + (mCheckedImage.getWidth() / 2), y + (Renderer::getFontSize() / 2), true);
+		Renderer::drawText(inputName[i], mCheckedImage.getWidth() + 14, y, 0x000000FF);
+		y += mCheckedImage.getHeight() + 5;
 	}
+
+	Renderer::drawText(inputName[mCurInputId], mCheckedImage.getWidth() + 14, y, 0x000000FF);
+
+	if(mCurInputId >= inputCount)
+	{
+		Renderer::drawCenteredText("Basic config done!", (int)(Renderer::getHeight() * 0.6), 0x00CC00FF);
+		Renderer::drawCenteredText("Press any button to continue.", (int)(Renderer::getHeight() * 0.6) + Renderer::getFontSize() + 4, 0x000000FF);
+	}
+
+	if(!mErrorMsg.empty())
+		Renderer::drawCenteredText(mErrorMsg, Renderer::getHeight() - Renderer::getFontSize() - 10, 0xFF0000FF);
 }

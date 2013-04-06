@@ -159,7 +159,15 @@ void GuiConfigureInputs::render()
 	if(mWindow->peekGui() != this)
 		return;
 
-	Renderer::drawCenteredText("ASSIGN INPUTS", 2, 0xFF00FFFF);
+	Renderer::drawCenteredText("ASSIGN INPUTS", 5, 0xFF00FFFF);
+
+	std::stringstream stream;
+	stream << "[P" << mCurrentPlayer + 1 << "]";
+	std::string playerStr = stream.str();
+	int plWidth = 0;
+	Renderer::sizeText(playerStr, &plWidth, NULL);
+	Renderer::drawText(playerStr, Renderer::getWidth() - plWidth - 2, 5, getPlayerColor(mCurrentPlayer));
+
 	mInputList.render();
 	mMappedList.render();
 }
