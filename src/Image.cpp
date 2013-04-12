@@ -31,7 +31,7 @@ void Image::load()
 	}
 }
 
-void Image::draw(int x, int y, bool center)
+void Image::draw(int x, int y, bool center, char opacity)
 {
 	if(mImage == NULL)
 		return;
@@ -44,7 +44,20 @@ void Image::draw(int x, int y, bool center)
 
 	SDL_Rect rect;
 	rect.x = x; rect.y = y; rect.w = mImage->w; rect.h = mImage->h;
+	SDL_SetAlpha(mImage, SDL_SRCALPHA, opacity);
 	SDL_BlitSurface(mImage, NULL, sScreen, &rect);
+}
+
+void Image::drawSection(int sx, int sy, int sw, int sh, int x, int y, char opacity)
+{
+	if(mImage == NULL)
+		return;
+
+	SDL_Rect src, dest;
+	src.x = sx; src.y = sy; src.w = sw; src.h = sh;
+	dest.x = x; dest.y = y; dest.w = sw; dest.h = sh;
+	SDL_SetAlpha(mImage, SDL_SRCALPHA, opacity);
+	SDL_BlitSurface(mImage, &src, sScreen, &dest);
 }
 
 int Image::getWidth()
