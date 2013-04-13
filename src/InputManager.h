@@ -22,6 +22,7 @@ public:
 	int getNumPlayers();
 
 	int getNumJoysticks();
+	int getDeviceButtonCount(int id);
 
 	void parseEvent(const SDL_Event& ev);
 

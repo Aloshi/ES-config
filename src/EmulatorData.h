@@ -36,6 +36,8 @@ public:
 	unsigned int getInputCount();
 	InputData* getInput(unsigned int index);
 
+	bool isValid();
+	
 private:
 	asIScriptEngine* mScriptEngine;
 	asIScriptModule* mScriptModule;
@@ -54,6 +56,8 @@ private:
 	std::string mShortName;
 	std::string mDescription;
 	std::string mConfigPath;
+
+	bool mValid;
 };
 
 #endif

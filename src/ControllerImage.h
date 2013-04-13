@@ -5,6 +5,8 @@
 #include <map>
 #include "Image.h"
 
+class InputManager;
+
 class ControllerImage
 {
 public:
@@ -17,6 +19,7 @@ public:
 	int getWidth();
 	int getHeight();
 
+	static ControllerImage* getImageForDevice(InputManager* inputManager, int id);
 private:
 	void addLocation(const std::string& location, int x, int y, int width, int height);
 
@@ -37,6 +40,8 @@ private:
 	};
 
 	std::map<std::string, LocationData> mLocationMap;
+
+	static std::map<std::string, ControllerImage*> sCachedMap;
 
 	Image* mImageTransparent;
 	Image* mImage;

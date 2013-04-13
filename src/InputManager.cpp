@@ -73,6 +73,13 @@ void InputManager::deinit()
 }
 
 int InputManager::getNumJoysticks() { return mNumJoysticks; }
+int InputManager::getDeviceButtonCount(int id)
+{
+	if(id == DEVICE_KEYBOARD)
+		return 120; //IT'S A LOT, OKAY.
+	
+	return SDL_JoystickNumButtons(mJoysticks[id]);
+}
 
 int InputManager::getNumPlayers() { return mNumPlayers; }
 void InputManager::setNumPlayers(int num) { mNumPlayers = num; }

@@ -1,8 +1,11 @@
 #include "ControllerImage.h"
 #include "PugiXML/pugixml.hpp"
 #include <iostream>
+#include "InputManager.h"
 
 extern std::string RESOURCE_PREFIX;
+
+std::map<std::string, ControllerImage*> ControllerImage::sCachedMap;
 
 ControllerImage::ControllerImage()
 {
@@ -31,7 +34,7 @@ bool ControllerImage::loadFile(const std::string& path)
 	
 	mImage = new Image(root.child("imagePath").text().get());
 	mImageTransparent = new Image(root.child("imagePath").text().get());
-	mImageTransparent->setAlpha((char)128);
+	mImageTransparent->setAlpha((char)102);
 
 	for(pugi::xml_node node = root.child("location"); node; node = node.next_sibling("location"))
 	{
@@ -61,6 +64,26 @@ void ControllerImage::draw(int offsetx, int offsety, const std::string& highligh
 
 	LocationData loc = mLocationMap[highlight];
 	mImage->drawSection(loc.x, loc.y, loc.width, loc.height, offsetx + loc.x, offsety + loc.y);
+}
+
+ControllerImage* ControllerImage::getImageForDevice(InputManager* inputManager, int id)
+{
+	//int buttons = inputManager->getDeviceButtonCount(id);
+
+	std::string path = "controllers/360esque.xml";
+
+	if(sCachedMap[path] == NULL)
+	{
+		sCachedMap[path] = new ControllerImage();
+
+		if(!sCachedMap[path]->loadFile(path))
+		{
+			delete sCachedMap[path];
+			sCachedMap[path] = NULL;
+		}
+	}
+
+	return sCachedMap[path];
 }
 
 int ControllerImage::getWidth() { return mImage->getWidth(); }

@@ -14,7 +14,8 @@ EmulatorData::EmulatorData(const std::string& path, asIScriptEngine* engine) : m
 	mScriptPerInputFunc = NULL;
 	mScriptPerPlayerFunc = NULL;
 
-	if(!loadFile(path))
+	mValid = loadFile(path);
+	if(!mValid)
 	{
 		std::cout << "Error loading file!\n";
 	}
@@ -34,6 +35,7 @@ EmulatorData::~EmulatorData()
 std::string EmulatorData::getName() { return mName; }
 std::string EmulatorData::getShortName() { return mShortName; }
 std::string EmulatorData::getDescription() { return mDescription; }
+bool EmulatorData::isValid() { return mValid; }
 
 bool EmulatorData::loadFile(const std::string& path)
 {

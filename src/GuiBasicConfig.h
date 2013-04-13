@@ -20,8 +20,6 @@ private:
 	InputConfig* mTargetConfig;
 	int mCurInputId;
 	Image mCheckedImage;
-
-	ControllerImage mControllerImage;
 };
 
 #endif
