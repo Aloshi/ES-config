@@ -4,6 +4,7 @@
 #include "Gui.h"
 #include <string>
 #include "Image.h"
+#include "ControllerImage.h"
 
 class GuiBasicConfig : public Gui
 {
@@ -19,6 +20,8 @@ private:
 	InputConfig* mTargetConfig;
 	int mCurInputId;
 	Image mCheckedImage;
+
+	ControllerImage mControllerImage;
 };
 
 #endif

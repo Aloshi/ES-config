@@ -11,6 +11,8 @@ static std::string inputLoc[6] = {LOCATION_UP, LOCATION_DOWN, LOCATION_LEFT, LOC
 GuiBasicConfig::GuiBasicConfig(Window* window, InputConfig* target) : Gui(window), mTargetConfig(target), mCheckedImage("done.png")
 {
 	mCurInputId = 0;
+
+	mControllerImage.loadFile("controllers/8button.xml");
 }
 
 void GuiBasicConfig::update(int deltaTime)
@@ -54,6 +56,8 @@ void GuiBasicConfig::input(InputConfig* config, Input input)
 
 void GuiBasicConfig::render()
 {
+	mControllerImage.draw(Renderer::getWidth()/2 - mControllerImage.getWidth()/2, (int)(Renderer::getHeight()/2.5) - mControllerImage.getHeight()/2, inputLoc[mCurInputId]);
+
 	std::stringstream stream;
 	stream << "PLAYER " << mTargetConfig->getPlayerNum() + 1 << ", press...";
 	Renderer::drawText(stream.str(), 10, 10, getPlayerColor(mTargetConfig->getPlayerNum()));

@@ -16,7 +16,7 @@ static TTF_Font* sFont = NULL;
 
 void Renderer::init()
 {
-	sScreen = SDL_SetVideoMode(800, 600, 16, SDL_SWSURFACE);
+	sScreen = SDL_SetVideoMode(800, 600, 16, SDL_SWSURFACE | SDL_ANYFORMAT);
 	sScreenWidth = sScreen->w;
 	sScreenHeight = sScreen->h;
 

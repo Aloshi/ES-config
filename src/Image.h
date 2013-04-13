@@ -10,8 +10,11 @@ public:
 	Image(const std::string& path);
 	~Image();
 
-	void draw(int x, int y, bool center = false, char opacity = 255);
-	void drawSection(int sx, int sy, int sw, int sh, int x, int y, char opacity);
+	void draw(int x, int y, bool center = false);
+	void drawSection(int sx, int sy, int sw, int sh, int x, int y);
+
+	void setAlpha(char alpha);
+
 	int getWidth();
 	int getHeight();
 

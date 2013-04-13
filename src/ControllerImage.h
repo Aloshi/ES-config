@@ -1,19 +1,21 @@
-#ifndef _CONTROLLERDATA_H_
-#define _CONTROLLERDATA_H_
+#ifndef _CONTROLLERIMAGE_H_
+#define _CONTROLLERIMAGE_H_
 
 #include <string>
 #include <map>
 #include "Image.h"
 
-class ControllerData
+class ControllerImage
 {
 public:
-	ControllerData();
-	~ControllerData();
+	ControllerImage();
+	~ControllerImage();
 
 	bool loadFile(const std::string& path);
-
 	void draw(int offsetx, int offsety, const std::string& highlight);
+
+	int getWidth();
+	int getHeight();
 
 private:
 	void addLocation(const std::string& location, int x, int y, int width, int height);
@@ -36,8 +38,8 @@ private:
 
 	std::map<std::string, LocationData> mLocationMap;
 
-	Image* mControllerImage;
-	Image* mHighlightImage;
+	Image* mImageTransparent;
+	Image* mImage;
 };
 
 #endif
