@@ -1,0 +1,32 @@
+<controller>
+	<imagePath>controllers/360esque.png</imagePath>
+	
+	<location name="up" x="28" y="117" width="98" height="98" />
+	<location name="down" x="28" y="117" width="98" height="98" />
+	<location name="left" x="28" y="117" width="98" height="98" />
+	<location name="right" x="28" y="117" width="98" height="98" />
+
+	<location name="btnRight" x="441" y="127" width="44" height="44" />
+	<location name="btnDown" x="404" y="167" width="44" height="44" />
+	<location name="btnUp" x="404" y="90" width="44" height="44" />
+	<location name="btnLeft" x="359" y="127" width="44" height="44" />
+
+	<location name="start" x="297" y="150" width="30" height="21" />
+	<location name="select" x="175" y="150" width="30" height="21" />
+	<location name="home" x="200" y="145" width="35" height="35" /> <!--this one isn't accurate-->
+
+	<location name="lshoulder1" x="22" y="27" width="115" height="49" />
+	<location name="lshoulder2" x="86" y="0" width="45" height="27" />
+	<location name="rshoulder1" x="362" y="27" width="115" height="49" />
+	<location name="rshoulder2" x="370" y="0" width="45" height="27" />
+
+	<location name="rstick_up" x="278" y="194" width="98" height="98" />
+	<location name="rstick_down" x="278" y="194" width="98" height="98" />
+	<location name="rstick_left" x="278" y="194" width="98" height="98" />
+	<location name="rstick_right" x="278" y="194" width="98" height="98" />
+
+	<location name="dpad_up" x="119" y="194" width="98" height="98" />
+	<location name="dpad_down" x="119" y="194" width="98" height="98" />
+	<location name="dpad_left" x="119" y="194" width="98" height="98" />
+	<location name="dpad_right" x="119" y="194" width="98" height="98" />
+</controller>

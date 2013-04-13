@@ -70,7 +70,7 @@ ControllerImage* ControllerImage::getImageForDevice(InputManager* inputManager, 
 {
 	//int buttons = inputManager->getDeviceButtonCount(id);
 
-	std::string path = "controllers/360esque.xml";
+	std::string path = RESOURCE_PREFIX + "controllers/360esque.xml";
 
 	if(sCachedMap[path] == NULL)
 	{
