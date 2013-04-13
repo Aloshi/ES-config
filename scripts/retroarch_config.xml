@@ -110,16 +110,16 @@
 			stickconf += "minus";
 			
 		f.write(stickconf + " = " + value); //value is still correct from the switch
-		skip = true;
+		//skip = true;
 	}
 	</perInputScript>
 
 	<!-- List of inputs, and a script called for writing them. 
 	Wrapped with: void perInput(File@ f, string INPUT_NAME, uint INPUT_TYPE, int INPUT_ID, int INPUT_VALUE, int DEVICE_ID) { !-->
-	<input name="A" location="btnDown" type="BUTTON|AXIS|HAT|KEY">writePair(f, "a");</input>
-	<input name="B" location="btnRight" type="BUTTON|AXIS|HAT|KEY">writePair(f, "b");</input>
-	<input name="X" location="btnLeft" type="BUTTON|AXIS|HAT|KEY">writePair(f, "x");</input>
-	<input name="Y" location="btnUp" type="BUTTON|AXIS|HAT|KEY">writePair(f, "y");</input>
+	<input name="B" location="btnDown" type="BUTTON|AXIS|HAT|KEY">writePair(f, "b");</input>
+	<input name="A" location="btnRight" type="BUTTON|AXIS|HAT|KEY">writePair(f, "a");</input>
+	<input name="Y" location="btnLeft" type="BUTTON|AXIS|HAT|KEY">writePair(f, "y");</input>
+	<input name="X" location="btnUp" type="BUTTON|AXIS|HAT|KEY">writePair(f, "x");</input>
 	<input name="L" location="lshoulder1" type="BUTTON|AXIS|HAT|KEY">writePair(f, "l");</input>
 	<input name="R" location="rshoulder1" type="BUTTON|AXIS|HAT|KEY">writePair(f, "r");</input>
 	
