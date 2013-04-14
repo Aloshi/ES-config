@@ -6,7 +6,7 @@
 #include <string>
 #include "EmulatorData.h"
 
-#define HOLD_BACK_TIME 1500
+#define HOLD_BACK_TIME 1000
 
 class GuiTestConfigs : public Gui
 {

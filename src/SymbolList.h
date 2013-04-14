@@ -65,6 +65,7 @@ public:
 
 	ListType getItem(int i) { return mEntries.at(i).item; }
 	Image* getImage(int i) { return mEntries.at(i).image; }
+	std::string getText(int i) { return mEntries.at(i).text; }
 
 	ListType getSelected()
 	{
@@ -89,6 +90,11 @@ public:
 	void changeSelectedText(const std::string& text)
 	{
 		mEntries.at(this->mCursor).text = text;
+	}
+
+	void changeText(int i, const std::string& text)
+	{
+		mEntries.at(i).text = text;
 	}
 
 	int getLength() { return mEntries.size(); }

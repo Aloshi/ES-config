@@ -46,7 +46,8 @@ void GuiConfigureInputs::populateList()
 
 			if(dupeLocation != -1)
 			{
-				//might wanna make an indication on the list that this input is mapped to X, but screw it
+				if(mInputList.getText(dupeLocation).find(inputData->name) == std::string::npos)
+					mInputList.changeText(dupeLocation, mInputList.getText(dupeLocation) + "/" + inputData->name);
 				continue;
 			}
 

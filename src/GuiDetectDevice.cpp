@@ -68,7 +68,7 @@ void GuiDetectDevice::update(int deltaTime)
 	{
 		mFinishTimer += deltaTime;
 
-		if(mFinishTimer > 1000)
+		if(mFinishTimer > 750)
 			done();
 	}
 }
