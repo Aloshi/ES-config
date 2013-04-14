@@ -1,31 +1,26 @@
 <emulator>
 	<!-- Name as it will appear in the emulator select screen. !-->
-	<name>Fake</name>
-	<shortName>fake</shortName>
+	<name>DGen</name>
+	<shortName>Gen</shortName>
 	
 	<!-- File we will write to. !-->
-	<configPath>fake.cfg</configPath>
+	<configPath>dgen.cfg</configPath>
+	
+	<maxPlayers>2</maxPlayers>
 	
 	<!-- Declare any global variables or functions here. They'll stay in scope across every script in this file. 
 	Not wrapped with anything. !-->
 	<declarationScript>
-	bool skip = false;
 	string value = "";
-	string type = "";
+	string deviceType = "";
 	string playerNum = "";
 	
 	void writePair(File@ f, string inputName)
 	{
-		if(skip)
-			return;
-		
-		if(type != "") //if type = "" it's a keyboard key
-			f.write("input_player" + playerNum + "_" + inputName + "_" + type + " = " + value);
-		else
-			f.write("input_player" + playerNum + "_" + inputName + " = " + value);
+		f.write(deviceType + "_pad" + playerNum + "_" + inputName + " = " + value);
 	}
 	
-	string getRAKey(int val)
+	string getDGenKey(int val)
 	{
 		string name = getKeyName(val); //getKeyName is a global function defined by ES-config
 		if(name == "left shift") //this is not an exhaustive list, but some of the more common keybinds
@@ -46,6 +41,7 @@
 	<!-- Called once, at the very beginning of writing the config file. 
 	Wrapped with: void init(File@ f) { !-->
 	<initScript>
+	f.write("bool_joystick = true");
 	</initScript>
 
 	<!-- Called once before writing for each player.
@@ -53,64 +49,38 @@
 	<perPlayerScript>
 		playerNum = PLAYER_NUMBER + 1;
 		
-		if(DEVICE_ID != DEVICE_KEYBOARD)
-			f.write("input_player" + playerNum + "_joypad_index = " + DEVICE_ID);
+		if(DEVICE_ID == DEVICE_KEYBOARD)
+			deviceType = "key";
+		else
+			deviceType = "joy";
 	</perPlayerScript>
 
 	<!-- Called once before each input, with arguments INPUT_NAME, INPUT_TYPE, INPUT_VALUE. 
 	You probably want to update your "global" variables here for the following write.
 	Wrapped with: void perInput(File@ f, string INPUT_NAME, InputType INPUT_TYPE, int INPUT_ID, int INPUT_VALUE, int DEVICE_ID) { !-->
 	<perInputScript>
-	skip = false;
+	
 	switch(INPUT_TYPE)
 	{
 		case TYPE_BUTTON:
-			type = "btn";
-			value = INPUT_ID;
+			value = "joystick" + DEVICE_ID + "-button" + INPUT_ID;
 			break;
 		
 		case TYPE_AXIS:
-			type = "axis";
-			if(INPUT_VALUE > 0)
-				value = "+" + INPUT_ID;
-			else
-				value = "-" + INPUT_ID;
+			value = "joystick" + DEVICE_ID + "-axis" + INPUT_ID + "-" + ((INPUT_VALUE > 0) ? "max" : "min");
 			break;
 			
 		case TYPE_HAT:
-			type = "btn";
-			value = "h" + INPUT_ID;
-			value += getHatDir(INPUT_VALUE);
+			value = "joystick" + DEVICE_ID + "-hat" + INPUT_ID + "-" + getHatDir(INPUT_VALUE);
 			break;
 		
 		case TYPE_KEY:
-			type = "";
-			value = getRAKey(INPUT_ID);
+			value = getDGenKey(INPUT_ID);
 			break;
 		
 		default:
 			print("unexpected input type?! [" + INPUT_TYPE + "]");
 			break;
-	}
-	
-	if(INPUT_TYPE == TYPE_AXIS && (INPUT_NAME == "Up" || INPUT_NAME == "Down" || INPUT_NAME == "Left" || INPUT_NAME == "Right"))
-	{
-		//we're assigning an analog stick to a direction, so we can bind it to the "real" stick config
-		//this allows it to be read as a true analog, which is really noticable in, say, PS1 emulation
-		string stickconf = "input_player" + playerNum + "_l_";
-		
-		if(INPUT_NAME == "Up" || INPUT_NAME == "Down")
-			stickconf += "y_";
-		else
-			stickconf += "x_";
-		
-		if(INPUT_NAME == "Up" || INPUT_NAME == "Right")
-			stickconf += "plus";
-		else
-			stickconf += "minus";
-			
-		f.write(stickconf + " = " + value); //value is still correct from the switch
-		skip = true;
 	}
 	</perInputScript>
 
@@ -118,13 +88,13 @@
 	Wrapped with: void perInput(File@ f, string INPUT_NAME, uint INPUT_TYPE, int INPUT_ID, int INPUT_VALUE, int DEVICE_ID) { !-->
 	<input name="A" location="btnDown" type="BUTTON|AXIS|HAT|KEY">writePair(f, "a");</input>
 	<input name="B" location="btnRight" type="BUTTON|AXIS|HAT|KEY">writePair(f, "b");</input>
+	<input name="C" location="lshoulder1" type="BUTTON|AXIS|HAT|KEY">writePair(f, "c");</input>
 	<input name="X" location="btnLeft" type="BUTTON|AXIS|HAT|KEY">writePair(f, "x");</input>
 	<input name="Y" location="btnUp" type="BUTTON|AXIS|HAT|KEY">writePair(f, "y");</input>
-	<input name="L" location="lshoulder1" type="BUTTON|AXIS|HAT|KEY">writePair(f, "l");</input>
-	<input name="R" location="rshoulder1" type="BUTTON|AXIS|HAT|KEY">writePair(f, "r");</input>
+	<input name="Z" location="rshoulder1" type="BUTTON|AXIS|HAT|KEY">writePair(f, "z");</input>
 	
 	<input name="Start" location="start" type="BUTTON|AXIS|HAT|KEY">writePair(f, "start");</input>
-	<input name="Select" location="select" type="BUTTON|AXIS|HAT|KEY">writePair(f, "select");</input>
+	<input name="Mode" location="select" type="BUTTON|AXIS|HAT|KEY">writePair(f, "mode");</input>
 
 	<input name="Up" location="up" type="BUTTON|AXIS|HAT|KEY">writePair(f, "up");</input>
 	<input name="Down" location="down" type="BUTTON|AXIS|HAT|KEY">writePair(f, "down");</input>
