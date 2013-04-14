@@ -42,7 +42,7 @@ void GuiSelectEmulators::searchDirForConfigs(const std::string& path, const char
 		if(filePath.extension() == matchExtension)
 		{
 			EmulatorData* sys = new EmulatorData(filePath.string(), mWindow->getScriptEngine());
-			if(sys->isValid())
+			if(sys->isLoaded())
 				mSystems.push_back(sys);
 			else
 				delete sys;

@@ -1,0 +1,96 @@
+<emulator>
+	<!-- Name as it will appear in the emulator select screen. !-->
+	<name>GnGeo</name>
+	<shortName>Geo</shortName>
+	
+	<!-- File we will write to. !-->
+	<configPath>gngeo.rc</configPath>
+	
+	<maxPlayers>2</maxPlayers>
+	
+	<!-- Declare any global variables or functions here. They'll stay in scope across every script in this file. 
+	Not wrapped with anything. !-->
+	<declarationScript>
+	string playerWriteString = "";
+	string dirUp = "";
+	string dirRight = "";
+	</declarationScript>
+
+	<!-- Called once, at the very beginning of writing the config file. 
+	Wrapped with: void init(File@ f) { !-->
+	<initScript>
+	f.write("joystick true");
+	</initScript>
+
+	<!-- Called once before writing for each player.
+	Wrapped with: void perPlayer(File@ f, int PLAYER_NUMBER, int DEVICE_ID) { !-->
+	<perPlayerScript>
+		string playerNum = (PLAYER_NUMBER + 1);
+		
+		if(DEVICE_ID != DEVICE_KEYBOARD)
+		{
+			f.write("p" + playerNum + "joydev " + DEVICE_ID);
+			playerWriteString = "p" + playerNum + "joy     ";
+		}else{
+			playerWriteString = "p" + playerNum + "key     ";
+		}
+	</perPlayerScript>
+
+	<!-- Called once before each input, with arguments INPUT_NAME, INPUT_TYPE, INPUT_VALUE. 
+	You probably want to update your "global" variables here for the following write.
+	Wrapped with: void perInput(File@ f, string INPUT_NAME, InputType INPUT_TYPE, int INPUT_ID, int INPUT_VALUE, int DEVICE_ID) { -->
+	<perInputScript>
+	playerWriteString += INPUT_ID + ",";
+
+	if(INPUT_NAME == "up")
+	{
+		if(INPUT_VALUE > 0)
+			dirUp = "1";
+		else
+			dirUp = "-1";
+	}
+	if(INPUT_NAME == "right")
+	{
+		if(INPUT_VALUE > 0)
+			dirRight = "1";
+		else
+			dirRight = "-1";
+	}
+	</perInputScript>
+
+	<!-- GnGeo sample (oh god why is this so hellish)
+		# Buttons/Axes configuration
+		# order : A,B,C,D,START,COIN,AXE_X,AXE_Y,AXE_X_DIR,AXE_Y_DIR
+		# AXE_X_DIR and AXE_Y_DIR is use to invert an axe
+		# ex: some joystick have the Y axe inverted (up <-> down). For them,
+		# use -1 for AXE_Y_DIR will solve the problem.
+		# hotkeys are optional (ie need not be mapped to buttons)
+		# use -1 to "unmap" a hotkey.
+		# Samples:
+		# hotkey0 = button 3, hotkey1 = button 0,
+		# p1joy     4,1,5,2,9,8,0,1,1,1,3,0
+		# No hotkeys
+		# p1joy     4,1,5,2,9,8,0,1,1,1
+	-->
+
+	<!-- List of inputs, and a script called for writing them. 
+	Wrapped with: void perInput(File@ f, string INPUT_NAME, InputType INPUT_TYPE, int INPUT_ID, int INPUT_VALUE, int DEVICE_ID) { !-->
+	<input name="A" location="btnDown" type="BUTTON|KEY" require="true"></input>
+	<input name="B" location="btnRight" type="BUTTON|KEY" require="true"></input>
+	<input name="C" location="btnLeft" type="BUTTON|KEY" require="true"></input>
+	<input name="D" location="btnUp" type="BUTTON|KEY" require="true"></input>
+
+	<input name="Start" location="start" type="BUTTON|KEY" require="true"></input>
+	<input name="Coin" location="select" type="BUTTON|KEY" require="true"></input>
+
+	<input name="Up" location="up" type="AXIS|KEY" require="true" mirrorAxis="down"></input>
+	<input name="Down" location="down" type="AXIS|KEY" require="true" mirrorAxis="up"></input>
+	<input name="Left" location="left" type="AXIS|KEY" require="true" mirrorAxis="right"></input>
+	<input name="Right" location="right" type="AXIS|KEY" require="true" mirrorAxis="left">
+		if(INPUT_TYPE == TYPE_AXIS)
+			f.write(playerWriteString + dirUp + "," + dirRight);
+		else
+			f.write(playerWriteString);
+	</input>
+
+</emulator>

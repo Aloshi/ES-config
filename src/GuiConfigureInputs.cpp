@@ -137,12 +137,14 @@ void GuiConfigureInputs::input(InputConfig* config, Input input)
 
 void GuiConfigureInputs::done()
 {
+	std::string msg[1];
+
 	std::vector<InputConfig*> configs;
 	for(int i = 0; i < mWindow->getInputManager()->getNumPlayers(); i++)
 	{
 		InputConfig* cfg = mWindow->getInputManager()->getInputConfigByPlayer(i);
 		
-		if(cfg->getPlayerNum() != -1)
+		if(cfg->getPlayerNum() != -1) //why is this if here
 			configs.push_back(cfg);
 	}
 
@@ -151,17 +153,31 @@ void GuiConfigureInputs::done()
 	for(unsigned int i = 0; i < mSystems.size(); i++)
 	{
 		EmulatorData* system = mSystems.at(i);
-		success = system->write(configs);
+
+		for(unsigned int k = 0; k < configs.size(); k++)
+		{
+			if(!system->isValidMapping(configs.at(k), msg[0]))
+			{
+				success = false;
+				break;
+			}
+		}
 
 		if(!success)
 			break;
+
+		success = system->write(configs);
+
+		if(!success)
+		{
+			msg[0] = "Script error!";
+			break;
+		}
 	}
 
-	std::string msg[1];
+	
 	if(success)
 		msg[0] = "Done!";
-	else
-		msg[0] = "Error!!";
 
 	mWindow->pushGui(new GuiMessage(mWindow, msg, 1));
 }

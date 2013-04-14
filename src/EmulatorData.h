@@ -14,9 +14,14 @@ public:
 	const std::string location;
 	const std::string funcSig;
 
+	const bool required;
+	const int typemask;
+	const std::string mirrorAxis;
+
 	asIScriptFunction* getWriteFunction(asIScriptModule* mod) { return mod->GetFunctionByDecl(funcSig.c_str()); };
 
-	InputData(std::string n, std::string l, std::string funcName) : name(n), location(l), funcSig(funcName)
+	InputData(std::string n, std::string l, std::string funcName, bool req, int type, std::string mirror) : name(n), location(l), funcSig(funcName),
+		required(req), typemask(type), mirrorAxis(mirror)
 	{
 	}
 };
@@ -36,7 +41,9 @@ public:
 	unsigned int getInputCount();
 	InputData* getInput(unsigned int index);
 
-	bool isValid();
+	bool isLoaded();
+
+	bool isValidMapping(InputConfig* config, std::string& errorMsg);
 	
 private:
 	asIScriptEngine* mScriptEngine;
@@ -48,7 +55,7 @@ private:
 
 	bool loadFile(const std::string& path);
 	bool addWrappedScript(CScriptBuilder& builder, const std::string& script, const char* sectionName, const char* funcDecl);
-	bool addInput(CScriptBuilder& builder, const std::string& name, const std::string& location, const std::string& script);
+	bool addInput(CScriptBuilder& builder, const std::string& name, const std::string& location, const std::string& script, bool req, const std::string& types, const std::string& mirrorAxis);
 
 	std::vector<InputData*> mInputs;
 
@@ -57,7 +64,7 @@ private:
 	std::string mDescription;
 	std::string mConfigPath;
 
-	bool mValid;
+	bool mLoaded;
 };
 
 #endif

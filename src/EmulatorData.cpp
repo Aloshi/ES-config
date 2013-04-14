@@ -14,8 +14,8 @@ EmulatorData::EmulatorData(const std::string& path, asIScriptEngine* engine) : m
 	mScriptPerInputFunc = NULL;
 	mScriptPerPlayerFunc = NULL;
 
-	mValid = loadFile(path);
-	if(!mValid)
+	mLoaded = loadFile(path);
+	if(!mLoaded)
 	{
 		std::cout << "Error loading file!\n";
 	}
@@ -35,7 +35,7 @@ EmulatorData::~EmulatorData()
 std::string EmulatorData::getName() { return mName; }
 std::string EmulatorData::getShortName() { return mShortName; }
 std::string EmulatorData::getDescription() { return mDescription; }
-bool EmulatorData::isValid() { return mValid; }
+bool EmulatorData::isLoaded() { return mLoaded; }
 
 bool EmulatorData::loadFile(const std::string& path)
 {
@@ -95,7 +95,8 @@ bool EmulatorData::loadFile(const std::string& path)
 
 	for(pugi::xml_node inputNode = root.child("input"); inputNode; inputNode = inputNode.next_sibling())
 	{
-		if(!addInput(builder, inputNode.attribute("name").as_string(), inputNode.attribute("location").as_string(), inputNode.text().get()))
+		if(!addInput(builder, inputNode.attribute("name").as_string(), inputNode.attribute("location").as_string(), inputNode.text().get(), 
+			inputNode.attribute("require").as_bool(), inputNode.attribute("type").as_string(), inputNode.attribute("mirrorAxis").as_string()))
 		{
 			std::cout << "Could not add input!\n";
 			return false;
@@ -152,11 +153,17 @@ std::string stripSpecialChars(const std::string& str)
 	return ret;
 }
 
-bool EmulatorData::addInput(CScriptBuilder& builder, const std::string& name, const std::string& location, const std::string& script)
+bool EmulatorData::addInput(CScriptBuilder& builder, const std::string& name, const std::string& location, const std::string& script, bool req, const std::string& types, const std::string& mirrorAxis)
 {
 	if(name.empty() || location.empty())
 	{
 		std::cout << "Name or Location for input is empty!\n";
+		return false;
+	}
+
+	if(!mirrorAxis.empty() && mirrorAxis == location)
+	{
+		std::cout << "[" << name << "]'s mirrorAxis == [" << name << "]'s location!\n";
 		return false;
 	}
 
@@ -166,14 +173,30 @@ bool EmulatorData::addInput(CScriptBuilder& builder, const std::string& name, co
 		std::cout << "Input name empty!\n";
 		return false;
 	}
-	std::string funcSig = "void input_" + safeName + "(File@ f)";
+	std::string funcSig = "void input_" + safeName + "(File@ f, string INPUT_NAME, InputType INPUT_TYPE, int INPUT_ID, int INPUT_VALUE, int DEVICE_ID)";
 
 	bool success = addWrappedScript(builder, script, safeName.c_str(), funcSig.c_str());
 
 	if(!success)
 		return false;
 
-	InputData* input = new InputData(name, location, funcSig);
+	int typemask;
+	std::stringstream stream(types);
+	std::string type;
+	while(getline(stream, type, '|'))
+	{
+		if(type == "AXIS")
+			typemask |= (1 << TYPE_AXIS);
+		else if(type == "BUTTON")
+			typemask |= (1 << TYPE_BUTTON);
+		else if(type == "HAT")
+			typemask |= (1 << TYPE_HAT);
+		else if(type == "KEY")
+			typemask |= (1 << TYPE_KEY);
+		
+	}
+
+	InputData* input = new InputData(name, location, funcSig, req, typemask, mirrorAxis);
 	mInputs.push_back(input);
 	return true;
 }
@@ -236,6 +259,11 @@ bool EmulatorData::write(std::vector<InputConfig*> configs)
 
 			cont->Prepare(inputData->getWriteFunction(mScriptModule));
 			cont->SetArgAddress(0, &file);
+			cont->SetArgObject(1, (void*)&inputData->name);
+			cont->SetArgDWord(2, input.type);
+			cont->SetArgDWord(3, input.id);
+			cont->SetArgDWord(4, input.value);
+			cont->SetArgDWord(5, config->getDeviceId());
 			if(cont->Execute() != asEXECUTION_FINISHED)
 			{
 				std::cout << "Input [" << inputData->name << "] write script crashed!\n";
@@ -257,4 +285,46 @@ unsigned int EmulatorData::getInputCount()
 InputData* EmulatorData::getInput(unsigned int index)
 {
 	return mInputs.at(index);
+}
+
+bool EmulatorData::isValidMapping(InputConfig* config, std::string& errorMsg)
+{
+	for(unsigned int i = 0; i < mInputs.size(); i++)
+	{
+		InputData* data = mInputs.at(i);
+		Input input = config->getInputByLocation(data->location);
+		if(data->required && !input.configured)
+		{
+			errorMsg = "Required input [" + data->name + "] not mapped!";
+			return false;
+		}
+
+		//typemasks up in here.
+		if(input.configured && data->typemask != 0)
+		{
+			//convert input.type to a bitmask
+			int type = 1 << input.type;
+			if((data->typemask & type) == 0)
+			{
+				errorMsg = "Input [" + data->name + "] is an invalid type!";
+				return false;
+			}
+		}
+
+		if(!data->mirrorAxis.empty())
+		{
+			Input mirror = config->getInputByLocation(data->mirrorAxis);
+			if((input.configured && input.type == TYPE_AXIS) || (mirror.configured && mirror.type == TYPE_AXIS))
+			{
+				//required
+				if(input.id != mirror.id || input.value == mirror.value)
+				{
+					errorMsg = "Axes [" + data->location + "] and [" + data->mirrorAxis + "] must mirror each other!";
+					return false;
+				}
+			}
+		}
+	}
+
+	return true;
 }
