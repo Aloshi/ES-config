@@ -180,20 +180,24 @@ bool EmulatorData::addInput(CScriptBuilder& builder, const std::string& name, co
 	if(!success)
 		return false;
 
-	int typemask;
-	std::stringstream stream(types);
-	std::string type;
-	while(getline(stream, type, '|'))
+	int typemask = 0;
+	if(types.empty())
 	{
-		if(type == "AXIS")
-			typemask |= (1 << TYPE_AXIS);
-		else if(type == "BUTTON")
-			typemask |= (1 << TYPE_BUTTON);
-		else if(type == "HAT")
-			typemask |= (1 << TYPE_HAT);
-		else if(type == "KEY")
-			typemask |= (1 << TYPE_KEY);
-		
+		typemask = 0xFFFFFFFF;
+	}else{
+		std::stringstream stream(types);
+		std::string type;
+		while(getline(stream, type, '|'))
+		{
+			if(type == "AXIS")
+				typemask |= (1 << TYPE_AXIS);
+			else if(type == "BUTTON")
+				typemask |= (1 << TYPE_BUTTON);
+			else if(type == "HAT")
+				typemask |= (1 << TYPE_HAT);
+			else if(type == "KEY")
+				typemask |= (1 << TYPE_KEY);
+		}
 	}
 
 	InputData* input = new InputData(name, location, funcSig, req, typemask, mirrorAxis);
