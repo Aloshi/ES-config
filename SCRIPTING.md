@@ -106,24 +106,14 @@ First, an example (you might want to save this as an .xml for proper syntax high
 
 The scripting language is AngelScript, which is very similar to C/C++.  The most noticeable difference I've found is that "@" is used intead of "*" when dealing with pointers/references.
 
-Stuff Registered with AngelScript
-=================================
-
-`enum InputType` - TYPE_BUTTON, TYPE_AXIS, TYPE_HAT, and TYPE_KEY.  This is the format of INPUT_TYPE.
-`string getHatDir(int value)` - Returns the direction of a hat (normally the value is a bitmask so you can't use it directly). Returns "up", "down", "left", or "right".
-`string getKeyName(int id)` - Returns the readable version of an SDL key ID. You may need to convert modifier keys (control, shift, alt) to a different format (e.g. "right shift" -> "rshift" for RetroArch).
-`class File` - Cannot be instantiated within AngelScript. A reference to a file opened for `<configPath>` is passed with most functions.
-`	void File.write(string line)` - Write a line to the file. A newline (\n) will be appended.
-`	void File.open(string path)` - Close the open file and open `path`. The reference will not change.
-
 How files are read
 ==================
 
 As you can see, script files are the bastard child of XML and AngelScript.  They're read by ES-config like this:
 
-1. Parse "meta" tags, such as name, short name, config path.
+First, parse "meta" tags, such as name, short name, config path.
 
-2. Patch together the AngelScript module. This is done by essentially pasting the content of a bunch of tags together, wrapping some in method declarations...
+Second, patch together the AngelScript module. This is done by essentially pasting the content of a bunch of tags together, wrapping some in method declarations, like so:
 
 ```
 <declarationScript/>
@@ -146,7 +136,7 @@ void input_{name}(File@ f, string INPUT_NAME, InputType INPUT_TYPE, int INPUT_ID
 }
 ```
 
-3. The emulator will eventually be written like so, called from the C++ side, similar to this AngelScript:
+The emulator will eventually be written like so, called from the C++ side, similar to this AngelScript:
 
 ```
 File@ f = new File(<configPath>);
@@ -159,10 +149,10 @@ for each input
 ```
 
 
-Meta Stuff
-==========
+Meta Tags
+=========
 
-Declared in the root of `<emulator>`.
+Placed in the root of `<emulator>`.
 
 REQUIRED:
 
@@ -171,6 +161,38 @@ REQUIRED:
 `<shortName>` - contains the abbreviated name for this emulator, used on the Test screen.
 
 `<configPath>` - contains the path we will write the config file to.
+
+
+Script Tags
+===========
+
+These are evaluated as AngelScript scripts in one way or another. These are also placed in the root of `<emulator>`.
+
+`<declarationScript>` - Not called or wrapped with a function declaration. Put your globals and functions here.
+
+`<initScript>` - Called once, before anything is written to the file.
+
+`<perPlayerScript>` - Called before each player begins to write any inputs.
+
+`<perInputScript>` - Called before each input and its script.  Put stuff here you don't want to have to repeat in each input.
+
+`<input>` - Each input can have its own individual script. See "Input Attributes" below for more information.
+
+
+Stuff Registered with AngelScript
+=================================
+
+`enum InputType` - TYPE_BUTTON, TYPE_AXIS, TYPE_HAT, and TYPE_KEY.  This is the format of INPUT_TYPE.
+
+`string getHatDir(int value)` - Returns the direction of a hat (normally the value is a bitmask so you can't use it directly). Returns "up", "down", "left", or "right".
+
+`string getKeyName(int id)` - Returns the readable version of an SDL key ID. You may need to convert modifier keys (control, shift, alt) to a different format (e.g. "right shift" -> "rshift" for RetroArch).
+
+`class File` - Cannot be instantiated by AngelScript. A reference to a file opened for `<configPath>` is passed with most functions.
+
+		`void File.write(string line)` - Write a line to the file. A newline (\n) will be appended.
+
+		`void File.open(string path)` - Close the open file and open `path`. The reference will not change.
 
 
 Input Attributes
