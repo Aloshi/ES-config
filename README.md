@@ -1,7 +1,7 @@
 ES-config
 =========
 
-A flexible tool for configuring multiple emulators simultaneously.
+A flexible tool for configuring multiple emulators simultaneously.  Written in C++ with SDL and AngelScript.
 
 Building
 ========
@@ -36,6 +36,8 @@ unchecked.png - icon for unselected in emulator list
 done.png - icon for input configured
 notdone.png - icon for input unconfigured
 font.ttf - font used throughout
+controllers/360esque.png - controller image
+controllers/360esque.xml - controller image path and button location definitions
 ```
 
 F4 will close the application if it hasn't frozen.
