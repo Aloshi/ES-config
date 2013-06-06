@@ -4,9 +4,10 @@
 #include "GuiSelectEmulators.h"
 #include <iostream>
 
-static int inputCount = 6;
-static std::string inputName[6] = { "Up", "Down", "Left", "Right", "A", "B"};
-static std::string inputLoc[6] = {LOCATION_UP, LOCATION_DOWN, LOCATION_LEFT, LOCATION_RIGHT, LOCATION_ACCEPT, LOCATION_BACK};
+static const int inputCount = 6;
+static std::string inputName[inputCount] = { "Up", "Down", "Left", "Right", "Accept", "Back"};
+static std::string inputLoc[inputCount] = {LOCATION_UP, LOCATION_DOWN, LOCATION_LEFT, LOCATION_RIGHT, LOCATION_ACCEPT, LOCATION_BACK};
+static std::string inputControllerLoc[inputCount] = {"up", "down", "left", "right", "btnDown", "btnRight"};
 
 GuiBasicConfig::GuiBasicConfig(Window* window, InputConfig* target) : Gui(window), mTargetConfig(target), mCheckedImage("done.png")
 {
@@ -55,7 +56,7 @@ void GuiBasicConfig::input(InputConfig* config, Input input)
 void GuiBasicConfig::render()
 {
 	ControllerImage* controller = ControllerImage::getImageForDevice(mWindow->getInputManager(), mTargetConfig->getDeviceId());
-	controller->draw(Renderer::getWidth()/2 - controller->getWidth()/2, (int)(Renderer::getHeight()/2.5) - controller->getHeight()/2, inputLoc[mCurInputId]);
+	controller->draw(Renderer::getWidth()/2 - controller->getWidth()/2, (int)(Renderer::getHeight()/2.5) - controller->getHeight()/2, inputControllerLoc[mCurInputId]);
 
 	std::stringstream stream;
 	stream << "PLAYER " << mTargetConfig->getPlayerNum() + 1 << ", press...";

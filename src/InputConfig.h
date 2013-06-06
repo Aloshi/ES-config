@@ -10,8 +10,8 @@
 
 #define DEVICE_KEYBOARD -1
 
-#define LOCATION_ACCEPT "btnDown"
-#define LOCATION_BACK "btnRight"
+#define LOCATION_ACCEPT "accept"
+#define LOCATION_BACK "back"
 #define LOCATION_UP "up"
 #define LOCATION_DOWN "down"
 #define LOCATION_RIGHT "right"

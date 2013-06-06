@@ -2,6 +2,7 @@
 #include "PugiXML/pugixml.hpp"
 #include <iostream>
 #include "FileWriter.h"
+#include "Settings.h"
 
 #define SCRIPT_INIT_SIGNATURE "void init(File@ f)"
 #define SCRIPT_PERPLAYER_SIGNATURE "void perPlayer(File@ f, int PLAYER_NUMBER, int DEVICE_ID)"
@@ -210,7 +211,7 @@ bool EmulatorData::write(std::vector<InputConfig*> configs)
 	asIScriptContext* cont = mScriptEngine->CreateContext();
 
 	FileWriter file;
-	if(!file.open(mConfigPath))
+	if(!file.open(Settings::getInstance()->resolveConfigPath(mConfigPath)))
 	{
 		std::cout << "Could not open file to write config!\n";
 		return false;

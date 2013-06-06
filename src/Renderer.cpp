@@ -2,8 +2,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <iostream>
-
-extern std::string RESOURCE_PREFIX;
+#include "Settings.h"
 
 static int sScreenWidth = 0;
 static int sScreenHeight = 0;
@@ -23,7 +22,7 @@ void Renderer::init()
 	if(sFont != NULL)
 		TTF_CloseFont(sFont);
 
-	sFont = TTF_OpenFont((RESOURCE_PREFIX + FONT_NAME).c_str(), (int)(sScreenHeight * 0.04));
+	sFont = TTF_OpenFont((Settings::getInstance()->getResourceDir() + FONT_NAME).c_str(), (int)(sScreenHeight * 0.04));
 
 	if(sFont == NULL)
 	{

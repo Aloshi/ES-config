@@ -108,6 +108,9 @@ void GuiTestConfigs::render()
 			std::string text;
 			std::vector<std::string> maps = getNamesFromLocation(mPressed[player]->at(i));
 
+			if(maps.size() == 0)
+				continue;
+
 			for(unsigned int k = 0; k < maps.size(); k++)
 			{
 				text += "[" + maps.at(k) + "] ";

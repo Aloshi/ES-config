@@ -68,11 +68,11 @@ std::vector<std::string> InputConfig::getMappedTo(Input input)
 				continue;
 			}
 
-			if(input.type == TYPE_AXIS)
+			if(chk.type == TYPE_AXIS)
 			{
 				if(input.value == 0 || chk.value == input.value)
 					maps.push_back(iterator->first);
-			}else{
+			}else{ //chk.type == TYPE_BUTTON || chk.type == TYPE_KEY
 				maps.push_back(iterator->first);
 			}
 		}

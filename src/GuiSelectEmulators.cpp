@@ -2,15 +2,14 @@
 #include "Window.h"
 #include "GuiConfigureInputs.h"
 #include <boost/filesystem.hpp>
-
-extern std::string FORCED_SCRIPT_DIRECTORY;
-extern std::string RESOURCE_PREFIX;
+#include "Settings.h"
 
 namespace fs = boost::filesystem;
 
 GuiSelectEmulators::GuiSelectEmulators(Window* window) : Gui(window), mUncheckedImage("unchecked.png"), mCheckedImage("checked.png"), mList(window)
 {
 	mList.setPosition(0, 40);
+	mList.setCursorColor(getPlayerColor(0));
 
 	loadSystemConfigs();
 }
@@ -54,8 +53,8 @@ void GuiSelectEmulators::loadSystemConfigs()
 {
 	clearSystems();
 
-	const int pathCount = 2;
-	std::string path[pathCount] = { "scripts/", FORCED_SCRIPT_DIRECTORY };
+	const int pathCount = 1;
+	std::string path[pathCount] = { Settings::getInstance()->getScriptDir() };
 
 	for(int i = 0; i < pathCount; i++)
 	{

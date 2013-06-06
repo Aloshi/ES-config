@@ -2,8 +2,7 @@
 #include "PugiXML/pugixml.hpp"
 #include <iostream>
 #include "InputManager.h"
-
-extern std::string RESOURCE_PREFIX;
+#include "Settings.h"
 
 std::map<std::string, ControllerImage*> ControllerImage::sCachedMap;
 
@@ -68,9 +67,7 @@ void ControllerImage::draw(int offsetx, int offsety, const std::string& highligh
 
 ControllerImage* ControllerImage::getImageForDevice(InputManager* inputManager, int id)
 {
-	//int buttons = inputManager->getDeviceButtonCount(id);
-
-	std::string path = RESOURCE_PREFIX + "controllers/360esque.xml";
+	std::string path = Settings::getInstance()->getResourceDir() + "controllers/360esque.xml";
 
 	if(sCachedMap[path] == NULL)
 	{

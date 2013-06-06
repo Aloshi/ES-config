@@ -5,19 +5,14 @@
 #include <angelscript.h>
 #include <scriptarray/scriptarray.h>
 #include <scriptstdstring/scriptstdstring.h>
-
 #include "FileWriter.h"
-
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include "Renderer.h"
 #include "Window.h"
 #include "GuiDetectDevice.h"
 #include <boost/filesystem.hpp>
-
-//stuff passed by command-line that doesn't really change
-std::string FORCED_SCRIPT_DIRECTORY = "";
-std::string RESOURCE_PREFIX = "resources/";
+#include "Settings.h"
 
 //used to print angelscript messages to the terminal
 void MessageCallback(const asSMessageInfo *msg, void *param)
@@ -92,21 +87,31 @@ bool parseArgs(int argc, char* argv[])
 			std::cout << "\nES-config\n";
 			std::cout << "A tool for configuring multiple emulators.\n";
 			std::cout << "------------------------------------------\n";
-			std::cout << "--scriptdir [path]	search for scripts at [path] (spaces? use quotes)\n";
-			std::cout << "--resourcedir [path]	load images, etc from [path]\n";
-			std::cout << "--help			pierce the heavens\n";
+			std::cout << "--scriptdir [path]		search for scripts at [path] (spaces? use quotes)\n";
+			std::cout << "--resourcedir [path]		load images, fonts, etc from [path]\n";
+			std::cout << "--settings [path]			load settings from this XML file\n";
+			std::cout << "--configpath [from] [to]	map file [from] to [to]\n";
+			std::cout << "--help				pierce the heavens\n";
 			return false;
 		}else if(strcmp(argv[i], "--scriptdir") == 0 && i < argc - 1)
 		{
-			FORCED_SCRIPT_DIRECTORY = argv[i + 1];
-			i += 2;
+			Settings::getInstance()->setScriptDir(argv[i + 1]);
+			i++;
 		}else if(strcmp(argv[i], "--resourcedir") == 0 && i < argc - 1)
 		{
-			RESOURCE_PREFIX = argv[i + 1];
+			std::string dir = argv[i + 1];
+			if(dir[dir.length() - 1] != '/')
+				dir += '/';
 
-			//must end in a slash
-			if(RESOURCE_PREFIX[RESOURCE_PREFIX.length() - 1] != '/')
-				RESOURCE_PREFIX += '/';
+			Settings::getInstance()->setResourceDir(dir);
+			i++;
+		}else if(strcmp(argv[i], "--settings") == 0 && i < argc - 1)
+		{
+			Settings::getInstance()->loadFromFile(argv[i + 1]);
+			i++;
+		}else if(strcmp(argv[i], "--configpath") == 0 && i < argc - 2)
+		{
+			Settings::getInstance()->changeConfigPath(argv[i + 1], argv[i + 2]);
 			i += 2;
 		}
 	}
