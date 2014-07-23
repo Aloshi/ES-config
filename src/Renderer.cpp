@@ -15,7 +15,18 @@ static TTF_Font* sFont = NULL;
 
 void Renderer::init()
 {
-	sScreen = SDL_SetVideoMode(800, 600, 16, SDL_SWSURFACE | SDL_ANYFORMAT);
+    char* error;
+    const SDL_VideoInfo* myPointer = SDL_GetVideoInfo();
+
+    if (myPointer == NULL ) {
+        std::cout << "SDL_GetVideoInfo() returned NULL in Render::init()";
+    }
+
+       sScreen = SDL_SetVideoMode(myPointer->current_w, myPointer->current_h, 16, SDL_SWSURFACE | SDL_ANYFORMAT);
+    if (sScreen == NULL ) {
+        std::cout << "SDL_SetVideoMode() returned " << SDL_GetError() ; 
+    }
+
 	sScreenWidth = sScreen->w;
 	sScreenHeight = sScreen->h;
 
